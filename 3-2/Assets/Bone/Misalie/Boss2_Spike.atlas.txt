@@ -1,0 +1,20 @@
+
+Boss2_Spike.png
+size: 476,186
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Shadow
+  rotate: true
+  xy: 386, 2
+  size: 182, 88
+  orig: 182, 88
+  offset: 0, 0
+  index: -1
+horn
+  rotate: true
+  xy: 2, 23
+  size: 161, 382
+  orig: 161, 382
+  offset: 0, 0
+  index: -1

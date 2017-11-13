@@ -1,0 +1,104 @@
+
+Boss2_Missile.png
+size: 652,162
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+1
+  rotate: true
+  xy: 365, 26
+  size: 31, 64
+  orig: 31, 64
+  offset: 0, 0
+  index: -1
+10
+  rotate: true
+  xy: 431, 2
+  size: 60, 82
+  orig: 60, 82
+  offset: 0, 0
+  index: -1
+11
+  rotate: false
+  xy: 512, 73
+  size: 66, 87
+  orig: 66, 87
+  offset: 0, 0
+  index: -1
+12
+  rotate: false
+  xy: 223, 57
+  size: 68, 103
+  orig: 68, 103
+  offset: 0, 0
+  index: -1
+13
+  rotate: false
+  xy: 293, 58
+  size: 68, 102
+  orig: 68, 102
+  offset: 0, 0
+  index: -1
+14
+  rotate: false
+  xy: 580, 3
+  size: 65, 83
+  orig: 65, 83
+  offset: 0, 0
+  index: -1
+2
+  rotate: false
+  xy: 181, 47
+  size: 40, 113
+  orig: 40, 113
+  offset: 0, 0
+  index: -1
+3
+  rotate: false
+  xy: 109, 34
+  size: 70, 126
+  orig: 70, 126
+  offset: 0, 0
+  index: -1
+4
+  rotate: true
+  xy: 419, 64
+  size: 96, 91
+  orig: 96, 91
+  offset: 0, 0
+  index: -1
+5
+  rotate: true
+  xy: 2, 11
+  size: 149, 65
+  orig: 149, 65
+  offset: 0, 0
+  index: -1
+6
+  rotate: false
+  xy: 181, 2
+  size: 182, 43
+  orig: 182, 43
+  offset: 0, 0
+  index: -1
+7
+  rotate: true
+  xy: 69, 20
+  size: 140, 38
+  orig: 140, 38
+  offset: 0, 0
+  index: -1
+8
+  rotate: true
+  xy: 363, 59
+  size: 101, 54
+  orig: 101, 54
+  offset: 0, 0
+  index: -1
+9
+  rotate: false
+  xy: 580, 88
+  size: 70, 72
+  orig: 70, 72
+  offset: 0, 0
+  index: -1
