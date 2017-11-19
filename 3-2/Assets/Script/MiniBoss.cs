@@ -18,12 +18,12 @@ public class MiniBoss : MonoBehaviour {
         if(boss.BabyNum == 1 || boss.BabyNum == 3 || boss.BabyNum == 4)
         {
             Angel_move(rd.velocity = new Vector3(5, 5, 0));
-            moveCheck = false;
+            MovePos = false;
         }
         else
         {
             Angel_move(rd.velocity = new Vector3(-5, 5, 0));
-            moveCheck = true;
+            MovePos = true;
         }
 
         player = GameObject.Find("Player").GetComponent<Player>();

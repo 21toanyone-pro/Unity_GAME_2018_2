@@ -109,6 +109,7 @@ public class Boss : MonoBehaviour {
                     break;
                 case BOSSSTATE.BABY:
                     StartCoroutine(Baby_boss());
+                    transform.localScale = new Vector3(1, 1, 1);
                     bossstate = BOSSSTATE.WAIT;
                     break;
             }
@@ -195,9 +196,11 @@ public class Boss : MonoBehaviour {
         {
             BabyNum = Random.Range(0, 5);
             Instantiate(Baby, BabyPos[BabyNum].transform.position, Quaternion.identity);
+            Boss_HP -= 50;
             yield return new WaitForSeconds(0.5f);
             StartCoroutine(Drop_Stone());
             yield return new WaitForSeconds(1f);
+            if (Boss_HP == 0) break;
         } while (true);
         
     }
