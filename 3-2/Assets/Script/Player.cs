@@ -295,8 +295,13 @@ public class Player : MonoBehaviour {
 
         if (other.gameObject.tag == "Stinger")
         {
-            
             CurrentHp = 5;
+            StartCoroutine(Slow_HP());
+        }
+
+        if(other.gameObject.tag == "MiniBoss")
+        {
+            CurrentHp = 30;
             StartCoroutine(Slow_HP());
         }
     }

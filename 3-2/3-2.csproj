@@ -83,6 +83,7 @@
     <Compile Include="Assets\Script\Camera_Shake.cs" />
     <Compile Include="Assets\Script\CameraFollow.cs" />
     <Compile Include="Assets\Script\CameraMove.cs" />
+    <Compile Include="Assets\Script\MiniBoss.cs" />
     <Compile Include="Assets\Script\MotionBlur.cs" />
     <Compile Include="Assets\Script\Player.cs" />
     <Compile Include="Assets\Script\Player_State.cs" />
@@ -173,6 +174,7 @@
   <ItemGroup>
     <None Include="Assets\Bone\Boss2.atlas.txt" />
     <None Include="Assets\Bone\Character.atlas.txt" />
+    <None Include="Assets\Bone\Mini_boss\Boss2.atlas.txt" />
     <None Include="Assets\Bone\Misalie\Boss2_Missile.atlas.txt" />
     <None Include="Assets\Bone\Misalie\Boss2_Spike.atlas.txt" />
     <None Include="Assets\Spine\spine-unity\Editor\Resources\SpineAssetDatabaseMarker.txt" />

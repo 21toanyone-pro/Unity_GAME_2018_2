@@ -8,7 +8,9 @@ public class Boss : MonoBehaviour {
     public GameObject groundStinger; //땅에서 나오는 가시
     public GameObject World_Stinger;
     public GameObject Stones;
+    public GameObject Baby; // 새끼들
     public GameObject[] StoneDrop = new GameObject[20];
+    public GameObject[] BabyPos = new GameObject[5];
     // GameObject[] Stone;
 
     
@@ -21,6 +23,7 @@ public class Boss : MonoBehaviour {
     float posUp = 0;
     int RandPattern;
     int StingerNum;
+    public int BabyNum;
 
     bool CenterCheck;
     bool HozCheck;
@@ -30,7 +33,7 @@ public class Boss : MonoBehaviour {
 
     int paseCheck; // 1, 2, 3 = 페이즈 1,2,3
 
-    public enum BOSSSTATE { SLEEP, IDLE, UPRISING, RUSH, SHOUT, SHOUT2, WAIT, MOVE, DEATH, PAGE03 }
+    public enum BOSSSTATE { SLEEP, IDLE, UPRISING, RUSH, SHOUT, SHOUT2, WAIT, MOVE, DEATH, PAGE03, BABY }
     BOSSSTATE bossstate = BOSSSTATE.IDLE;
 
     // Use this for initialization
@@ -57,7 +60,6 @@ public class Boss : MonoBehaviour {
                     if(paseCheck == 3)
                     {
                         bossstate = BOSSSTATE.PAGE03;
-                        Debug.Log("!");
                     }
                     break;
 
@@ -103,6 +105,10 @@ public class Boss : MonoBehaviour {
                     break;
                 case BOSSSTATE.PAGE03:
                     StartCoroutine(Pasge03_boss());
+                    bossstate = BOSSSTATE.WAIT;
+                    break;
+                case BOSSSTATE.BABY:
+                    StartCoroutine(Baby_boss());
                     bossstate = BOSSSTATE.WAIT;
                     break;
             }
@@ -181,6 +187,19 @@ public class Boss : MonoBehaviour {
             yield return new WaitForSeconds(0.8f);
             bossstate = BOSSSTATE.IDLE;
         }
+    }
+
+    IEnumerator Baby_boss()
+    {
+        do
+        {
+            BabyNum = Random.Range(0, 5);
+            Instantiate(Baby, BabyPos[BabyNum].transform.position, Quaternion.identity);
+            yield return new WaitForSeconds(0.5f);
+            StartCoroutine(Drop_Stone());
+            yield return new WaitForSeconds(1f);
+        } while (true);
+        
     }
 
     IEnumerator Drop_Stone()
@@ -269,8 +288,7 @@ public class Boss : MonoBehaviour {
 
     IEnumerator Crying_Boss()
     {
-        Debug.Log("Cry!!");
-        bossstate = BOSSSTATE.IDLE;
+        bossstate = BOSSSTATE.BABY;
         yield return null;
     }
    
