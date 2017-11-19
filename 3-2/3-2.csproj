@@ -80,9 +80,14 @@
   <ItemGroup>
     <Compile Include="Assets\Script\Boss.cs" />
     <Compile Include="Assets\Script\Camera_Con.cs" />
+    <Compile Include="Assets\Script\Camera_Shake.cs" />
     <Compile Include="Assets\Script\CameraFollow.cs" />
     <Compile Include="Assets\Script\CameraMove.cs" />
+    <Compile Include="Assets\Script\MotionBlur.cs" />
     <Compile Include="Assets\Script\Player.cs" />
+    <Compile Include="Assets\Script\Player_State.cs" />
+    <Compile Include="Assets\Script\Spike.cs" />
+    <Compile Include="Assets\Script\Stone.cs" />
     <Compile Include="Assets\Spine\spine-csharp\Animation.cs" />
     <Compile Include="Assets\Spine\spine-csharp\AnimationState.cs" />
     <Compile Include="Assets\Spine\spine-csharp\AnimationStateData.cs" />

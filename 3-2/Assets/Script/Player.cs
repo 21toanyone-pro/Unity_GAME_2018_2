@@ -8,15 +8,22 @@ public class Player : MonoBehaviour {
     Rigidbody2D rigid;
     public Collider2D coll;
 
-    float JumpPower = 10;
+    public float PlayerHP = 100;
+    public float PlayerST = 100;
+
+    float CurrentHp;
+    float CurrentST;
+    float y = 0; //피채워줌 별거없음
+
+    float JumpPower = 10; // 점프 파워
 
     bool JumpCheck; // 이중점프 체크
     bool MoveCheck; // 이동중 체크
-    bool JumpCharsh;
+    bool JumpCharsh; // 점프중 부딫힘
     bool AttackCheck;
     float AttackTime;
+    public float Stamina_Time = 0f; //스태미나 차는 시간 체크
     public bool RollingCheck; // 구르기 체크
-
 
     int LR_Check = 1; // 좌우 체크
     int WAttackNum =0;
@@ -25,13 +32,24 @@ public class Player : MonoBehaviour {
     void Awake () {
         rigid = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
-	}
+        StartCoroutine(Recovery_ST());
+    }
 
     void FixedUpdate()
     {
         if (AttackCheck)
         {
             AttackTime += Time.deltaTime;
+        }
+
+        if (!JumpCheck && !AttackCheck && !RollingCheck)
+        {
+            Stamina_Time += Time.deltaTime;
+        }
+
+        if (PlayerST <= 0)
+        {
+            PlayerST = 0;
         }
     }
 
@@ -40,9 +58,12 @@ public class Player : MonoBehaviour {
 
         if(!RollingCheck) //구르는 중이 아니면 움직임 
         {
-           Moving();
-           WeakAttack();
-           StrongAttack();
+            if (!AttackCheck)
+            {
+                Moving();
+            }
+            WeakAttack();
+            StrongAttack();
         }
 
         if (!JumpCheck && !AttackCheck)
@@ -50,12 +71,52 @@ public class Player : MonoBehaviour {
             Rolling(); // 구르기
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) && !JumpCheck) //점프 버튼 
+        if (Input.GetKeyDown(KeyCode.Space) && !JumpCheck && PlayerST >= 5) //점프 버튼 
         {
             animator.SetBool("Jumping", true);
             JumpCheck = true;
             Jumping();
         }
+    }
+
+    IEnumerator Recovery_ST()
+    {
+        do
+        {
+            if (Stamina_Time > 0.3f && PlayerST < 100)
+            {
+                PlayerST += 1;
+            }
+            yield return new WaitForSeconds(0.001f);
+        } while (true);
+    }
+
+    IEnumerator Slow_ST()
+    {
+        yield return new WaitForSeconds(0.01f);
+        if (y < CurrentST)
+        {
+            PlayerST -= 1;
+            y += 1;
+            StartCoroutine(Slow_ST());
+        }
+
+        else if (y == CurrentST)
+            y = 0;
+    }
+
+    IEnumerator Slow_HP()
+    {
+        yield return new WaitForSeconds(0.01f);
+        if (y < CurrentHp)
+        {
+            PlayerHP -= 1;
+            y += 1;
+            StartCoroutine(Slow_HP());
+        }
+
+        else if (y == CurrentHp)
+            y = 0;
     }
 
     void Moving() //캐릭터 좌우 이동
@@ -87,25 +148,31 @@ public class Player : MonoBehaviour {
             MoveCheck = false;
         }
 
-        if (!JumpCharsh)
-        rigid.velocity = new Vector2(movepowers, rigid.velocity.y);
+        if (!JumpCharsh && !AttackCheck)
+            rigid.velocity = new Vector2(movepowers, rigid.velocity.y);
     }
 
     void Jumping() //점프
     {
         rigid.velocity = Vector2.zero;
         rigid.AddForce(new Vector2(0, JumpPower), ForceMode2D.Impulse);
+        CurrentST = 5;
+        StartCoroutine(Slow_ST());
+        Stamina_Time = 0;
     }
 
 
     void Rolling() //구르기 
     {
         var Start = transform.position;
-        if (Input.GetKeyDown(KeyCode.LeftShift) && !RollingCheck) // 구르기 체크
+        if (Input.GetKeyDown(KeyCode.LeftShift) && !RollingCheck && PlayerST >= 50) // 구르기 체크
         {
             animator.SetBool("Rolling", true);
             StartCoroutine(RollingState());
             RollingCheck = true;
+            CurrentST = 50;
+            StartCoroutine(Slow_ST());
+            Stamina_Time = 0;
         }
     }
 
@@ -171,15 +238,18 @@ public class Player : MonoBehaviour {
 
     void WeakAttack() // 약공
     {
-        if (Input.GetKeyDown(KeyCode.S))
+        if (Input.GetKeyDown(KeyCode.S) && PlayerST >= 5)
         {
             AttackCheck = true;
-
+            rigid.velocity = Vector2.zero;
             if (AttackCheck && WAttackNum ==0)
             {
                 coll.enabled = true;
                 WAttackNum = 1;
                 animator.SetBool("WAttack01", true);
+                CurrentST = 5;
+                StartCoroutine(Slow_ST());
+                Stamina_Time = 0;
             }
 
             else if (AttackTime < 1.8f && WAttackNum ==1)
@@ -187,7 +257,8 @@ public class Player : MonoBehaviour {
                 animator.SetBool("WAttack02", true);
                 animator.SetBool("WAttack01", false);
                 WAttackNum = 2;
-                
+                CurrentST = 5;
+                StartCoroutine(Slow_ST());
             }
         }
     }
@@ -196,12 +267,18 @@ public class Player : MonoBehaviour {
     {
         animator.SetBool("SAttacking", false);
         coll.enabled = false;
+        AttackCheck = false;
     }
 
     public void StrongAttack() // 강공격
     {
-        if(Input.GetKeyDown(KeyCode.D))
+        if(Input.GetKeyDown(KeyCode.D) && PlayerST >= 5)
         {
+            CurrentST = 5;
+            StartCoroutine(Slow_ST());
+            Stamina_Time = 0;
+            AttackCheck = true;
+            rigid.velocity = Vector2.zero;
             animator.SetBool("SAttacking", true);
             coll.enabled = true;
         }
@@ -214,6 +291,13 @@ public class Player : MonoBehaviour {
             JumpCheck = false;
             JumpCharsh = false;
             animator.SetBool("Jumping", false);
+        }
+
+        if (other.gameObject.tag == "Stinger")
+        {
+            
+            CurrentHp = 5;
+            StartCoroutine(Slow_HP());
         }
     }
 
