@@ -153,7 +153,7 @@ public class Boss : MonoBehaviour {
         }
         else if(paseCheck ==2)
         {
-            StartCoroutine(Shout_World());
+            StartCoroutine(WorldStinger());
         }
        
     }
@@ -166,6 +166,27 @@ public class Boss : MonoBehaviour {
         Invoke("StopShake", 0.9f);
         yield return new WaitForSeconds(1f);
         Instantiate(World_Stinger, World_pos, Quaternion.identity);
+        yield return new WaitForSeconds(1f);
+        ani.SetBool("Spikeing", false);
+        bossstate = BOSSSTATE.IDLE;
+    }
+
+    IEnumerator WorldStinger()
+    {
+        Vector3 StingerPosR = new Vector3(transform.position.x+3, transform.position.y, transform.position.z);
+        Vector3 StingerPosL = new Vector3(transform.position.x-3, transform.position.y, transform.position.z);
+
+        yield return new WaitForSeconds(1f);
+       
+            for (int i = 0; i < 20; i++)
+            {
+                StingerPosR = new Vector3(StingerPosR.x + 1, StingerPosR.y, StingerPosR.z);
+                StingerPosL = new Vector3(StingerPosL.x + -1, StingerPosL.y, StingerPosL.z);
+                Instantiate(groundStinger, StingerPosR, Quaternion.identity);
+                Instantiate(groundStinger, StingerPosL, Quaternion.identity);
+            yield return new WaitForSeconds(0.2f);
+        }
+       
         yield return new WaitForSeconds(1f);
         ani.SetBool("Spikeing", false);
         bossstate = BOSSSTATE.IDLE;
