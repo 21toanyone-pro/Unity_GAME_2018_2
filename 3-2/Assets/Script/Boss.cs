@@ -1,39 +1,41 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Spine.Unity;
+using Spine;
 
 public class Boss : MonoBehaviour {
 
     public GameObject PlayerPos;
     public GameObject groundStinger; //땅에서 나오는 가시
+    public GameObject gorundStingerR; 
     public GameObject World_Stinger;
     public GameObject Stones;
     public GameObject Baby; // 새끼들
     public GameObject[] StoneDrop = new GameObject[20];
     public GameObject[] BabyPos = new GameObject[5];
-    // GameObject[] Stone;
 
-    
+
+    SkeletonAnimator skeleton;
     Camera_Shake CShacke;
     Animator ani;
     Player player;
     public Collider2D coll;
 
     public float Boss_HP = 2000f;
-    float posUp = 0;
     int RandPattern;
     int StingerNum;
     public int BabyNum;
 
-    bool CenterCheck;
     bool HozCheck;
     bool RushCheck;
     bool UprisingCheck;
     bool WallCheck;
+    bool Hit_effect;
 
     int paseCheck; // 1, 2, 3 = 페이즈 1,2,3
 
-    public enum BOSSSTATE { SLEEP, IDLE, UPRISING, RUSH, SHOUT, SHOUT2, WAIT, MOVE, DEATH, PAGE03, BABY }
+    public enum BOSSSTATE { SLEEP, IDLE, UPRISING, RUSH, SHOUT, SHOUT2, WAIT, MOVE, DEATH, PAGE03, PAGE02,BABY }
     BOSSSTATE bossstate = BOSSSTATE.IDLE;
 
     // Use this for initialization
@@ -43,6 +45,7 @@ public class Boss : MonoBehaviour {
         player = GameObject.Find("Player").GetComponent<Player>();
         CShacke = GameObject.Find("Main Camera").GetComponent<Camera_Shake>();
         ani = GetComponent<Animator>();
+        skeleton = GetComponent<SkeletonAnimator>();
         CShacke.enabled = false;
     }
 
@@ -93,8 +96,8 @@ public class Boss : MonoBehaviour {
                     break;
 
                 case BOSSSTATE.SHOUT: // 포효1 (플레이어가 서있는 위치에 0.8초마다 가시가 솟아오름)
-                        ani.SetBool("Shoting", true);
-                        StingerNum = 0;
+                    ani.SetBool("Shoting", true);
+                    StingerNum = 0;
                     bossstate = BOSSSTATE.WAIT;
                     break;
 
@@ -105,11 +108,17 @@ public class Boss : MonoBehaviour {
                     break;
                 case BOSSSTATE.PAGE03:
                     StartCoroutine(Pasge03_boss());
+                    ani.SetTrigger("PageChange03");
                     bossstate = BOSSSTATE.WAIT;
                     break;
+
+                case BOSSSTATE.PAGE02:
+                    bossstate = BOSSSTATE.WAIT;
+                    break;
+
                 case BOSSSTATE.BABY:
                     StartCoroutine(Baby_boss());
-                    transform.localScale = new Vector3(1, 1, 1);
+                    transform.localScale = new Vector3(1.2f, 1.2f, 1.2f);
                     bossstate = BOSSSTATE.WAIT;
                     break;
             }
@@ -141,12 +150,17 @@ public class Boss : MonoBehaviour {
         StartCoroutine(Pattern());
     }
 
+    public void Page2end()
+    {
+        bossstate = BOSSSTATE.IDLE;
+    }
 
-    void bossSpikeing()
+
+    void BossSpikeing()
     {
         ani.SetBool("Shoting", false);
         ani.SetBool("Spikeing", true);
-        Vector3 StingerPos = new Vector3(PlayerPos.transform.position.x, -5.63f, PlayerPos.transform.position.z);
+        Vector3 StingerPos = new Vector3(PlayerPos.transform.position.x, -4.691572f, PlayerPos.transform.position.z);
         if(paseCheck ==1)
         {
             StartCoroutine(Shout_Stinger(StingerPos));
@@ -155,12 +169,11 @@ public class Boss : MonoBehaviour {
         {
             StartCoroutine(WorldStinger());
         }
-       
     }
 
     IEnumerator Shout_World() 
     {
-        Vector3 World_pos = new Vector3(12.0f, 0.77f, 0f);
+        Vector3 World_pos = new Vector3(12.0f, -4.691572f, 0f);
         CShacke.enabled = true;
         CShacke.shake = 1f;
         Invoke("StopShake", 0.9f);
@@ -178,13 +191,16 @@ public class Boss : MonoBehaviour {
 
         yield return new WaitForSeconds(1f);
        
-            for (int i = 0; i < 20; i++)
+            for (int i = 0; i < 25; i++)
             {
-                StingerPosR = new Vector3(StingerPosR.x + 1, StingerPosR.y, StingerPosR.z);
-                StingerPosL = new Vector3(StingerPosL.x + -1, StingerPosL.y, StingerPosL.z);
-                Instantiate(groundStinger, StingerPosR, Quaternion.identity);
+                StingerPosR = new Vector3(StingerPosR.x + 3, StingerPosR.y, StingerPosR.z);
+                StingerPosL = new Vector3(StingerPosL.x + -3, StingerPosL.y, StingerPosL.z);
+                Instantiate(gorundStingerR, StingerPosR, Quaternion.identity);
                 Instantiate(groundStinger, StingerPosL, Quaternion.identity);
-            yield return new WaitForSeconds(0.2f);
+                CShacke.enabled = true;
+                CShacke.shake = 0.3f;
+                Invoke("StopShake", 0.3f);
+                yield return new WaitForSeconds(0.3f);
         }
        
         yield return new WaitForSeconds(1f);
@@ -200,7 +216,7 @@ public class Boss : MonoBehaviour {
         Instantiate(groundStinger, pos, Quaternion.identity);
         if(StingerNum < 5)
         {
-            StartCoroutine(Shout_Stinger(new Vector3(PlayerPos.transform.position.x, -5.63f, PlayerPos.transform.position.z)));
+            StartCoroutine(Shout_Stinger(new Vector3(PlayerPos.transform.position.x, -4.691572f, PlayerPos.transform.position.z)));
         }
 
         else if(StingerNum == 5)
@@ -282,29 +298,16 @@ public class Boss : MonoBehaviour {
     IEnumerator Pasge03_boss()
     {
         Vector3 MoveVec = Vector3.zero;
+        Vector3 StopPos = new Vector3(12f, transform.position.y, transform.position.z);
         do
         {
-            if (HozCheck)
+            transform.position = Vector3.MoveTowards(transform.position, StopPos, Time.deltaTime);
+            if(transform.position == StopPos)
             {
-                ani.SetBool("Rushing", true);
-                MoveVec = Vector3.left;
-                if (CenterCheck)
-                {
-                    StartCoroutine(Crying_Boss());
-                    break;
-                }
+                StartCoroutine(Crying_Boss());
+                ani.SetTrigger("Idle03");
+                break;
             }
-            else if (!HozCheck)
-            {
-                ani.SetBool("Rushing", true);
-                MoveVec = Vector3.right;
-                if (CenterCheck)
-                {
-                    StartCoroutine(Crying_Boss());
-                    break;
-                }
-            }
-            transform.position += MoveVec * 5 * Time.deltaTime;
             yield return null;
         } while (true);
        
@@ -312,6 +315,7 @@ public class Boss : MonoBehaviour {
 
     IEnumerator Crying_Boss()
     {
+        yield return new WaitForSeconds(1f);
         bossstate = BOSSSTATE.BABY;
         yield return null;
     }
@@ -336,14 +340,14 @@ public class Boss : MonoBehaviour {
         if (move == "Left")
         {
             MoveVec = Vector3.left;
-            transform.localScale = new Vector3(1, 1, 1);
+            transform.localScale = new Vector3(1.2f, 1.2f, 1.2f);
             HozCheck = true;
         }
 
         else if (move == "Right")
         {
             MoveVec = Vector3.right;
-            transform.localScale = new Vector3(-1, 1, 1);
+            transform.localScale = new Vector3(-1.2f, 1.2f, 1.2f);
             HozCheck = false;
         }
 
@@ -362,14 +366,14 @@ public class Boss : MonoBehaviour {
             {
                 ani.SetBool("Rushing", true);
                 RushVec = Vector3.left;
-                transform.localScale = new Vector3(1, 1, 1);
+                transform.localScale = new Vector3(1.2f, 1.2f, 1.2f);
 
             }
             else if (!HozCheck)
             {
                 ani.SetBool("Rushing", true);
                 RushVec = Vector3.right;
-                transform.localScale = new Vector3(-1, 1, 1);
+                transform.localScale = new Vector3(-1.2f, 1.2f, 1.2f);
             }
             t += Time.deltaTime * 2f;
             transform.position += RushVec * 10 * Time.deltaTime;
@@ -397,13 +401,13 @@ public class Boss : MonoBehaviour {
                 
                 ani.SetBool("Rushing", true);
                 RushVec = Vector3.left;
-                transform.localScale = new Vector3(1, 1, 1);
+                transform.localScale = new Vector3(1.2f, 1.2f, 1.2f);
             }
             else if (!HozCheck)
             {
                 ani.SetBool("Rushing", true);
                 RushVec = Vector3.right;
-                transform.localScale = new Vector3(-1, 1, 1);
+                transform.localScale = new Vector3(-1.2f, 1.2f, 1.2f);
             }
             transform.position += RushVec * 10 * Time.deltaTime;
             
@@ -418,7 +422,6 @@ public class Boss : MonoBehaviour {
             bossstate = BOSSSTATE.UPRISING;
             WallCheck = false;
         }
-
     }
 
     IEnumerator Uprising(Vector3 End) // 들어갔다 나오기
@@ -431,38 +434,64 @@ public class Boss : MonoBehaviour {
         bossstate = BOSSSTATE.IDLE;
     }
 
+    IEnumerator Hit_Image()
+    {
+        Hit_effect = true;
+        int Hited = 0;
+        while ( Hited < 3)
+        {
+            if (Hited % 2 == 0)
+            {
+                skeleton.GetComponent<SkeletonAnimator>().skeleton.a = 0.8f;
+            }
+            else
+                skeleton.GetComponent<SkeletonAnimator>().skeleton.a = 1f;
+            yield return new WaitForSeconds(0.1f);
+            Hited++;
+        }
+        skeleton.GetComponent<SkeletonAnimator>().skeleton.a = 1f;
+        yield return new WaitForSeconds(0.2f);
+        Hit_effect = false;
+    }
+
     public void Boss_Dig() //들어가는 이미지가 끝난후 아래로 내려준다.
     {
         transform.position = new Vector3(transform.position.x, transform.position.y - 20, transform.position.z);
+        coll.enabled = false;
     }
 
+    public void Boss_Uprising()
+    {
+        coll.enabled = true;
+    }
 
     void FixedUpdate()
     {
         float Cast = Mathf.Abs(transform.position.x - PlayerPos.transform.position.x);
 
-        if(Boss_HP >= 1000)
+        if(Boss_HP >= 750)
         {
             paseCheck = 1;
         }
 
-        else if(Boss_HP < 1000 && Boss_HP > 500)
+        else if(Boss_HP < 750 && Boss_HP > 75)
         {
             paseCheck = 2;
+            ani.SetTrigger("PageChange02");
         }
 
-        else if (Boss_HP <= 500)
+        else if (Boss_HP <= 75)
         {
             paseCheck = 3;
         }
 
         // 여긴 못지나가게 체크
-        if (player.RollingCheck && Cast < 5)
+        if (player.RollingCheck && Cast < 4.5f)
         {
             coll.enabled = false;
         }
 
-        else if (!player.RollingCheck && Cast > 5)
+        else if (!player.RollingCheck && Cast > 4.5f)
         {
             coll.enabled = true;
         }
@@ -477,12 +506,14 @@ public class Boss : MonoBehaviour {
             CShacke.shake = 0.5f;
             Invoke("StopShake", 0.5f);
         }
-
-        if(other.gameObject.tag == "Center")
+        if (other.gameObject.tag == "Attackcoll")
         {
-            CenterCheck = true;
+            Boss_HP -= player.AttackDamage;
+            StartCoroutine(Hit_Image());
         }
     }
+
+
 
     void StopShake()
     {

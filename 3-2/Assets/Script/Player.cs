@@ -15,18 +15,19 @@ public class Player : MonoBehaviour {
     float CurrentST;
     float y = 0; //피채워줌 별거없음
 
-    float JumpPower = 10; // 점프 파워
+    float JumpPower = 70; // 점프 파워
+    public float AttackDamage = 0;
 
     bool JumpCheck; // 이중점프 체크
-    bool MoveCheck; // 이동중 체크
     bool JumpCharsh; // 점프중 부딫힘
     bool AttackCheck;
-    float AttackTime;
+    bool NextAttackCheck;
+    bool GuardCheck;
+
     public float Stamina_Time = 0f; //스태미나 차는 시간 체크
     public bool RollingCheck; // 구르기 체크
 
     int LR_Check = 1; // 좌우 체크
-    int WAttackNum =0;
 
     // Use this for initialization
     void Awake () {
@@ -37,10 +38,6 @@ public class Player : MonoBehaviour {
 
     void FixedUpdate()
     {
-        if (AttackCheck)
-        {
-            AttackTime += Time.deltaTime;
-        }
 
         if (!JumpCheck && !AttackCheck && !RollingCheck)
         {
@@ -62,7 +59,6 @@ public class Player : MonoBehaviour {
             {
                 Moving();
             }
-            WeakAttack();
             StrongAttack();
         }
 
@@ -71,12 +67,59 @@ public class Player : MonoBehaviour {
             Rolling(); // 구르기
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) && !JumpCheck && PlayerST >= 5) //점프 버튼 
+        if (Input.GetKeyDown(KeyCode.S) && PlayerST >= 5)
+        {
+            if (!NextAttackCheck)
+            {
+                AttackDamage = 20;
+                NextAttackCheck = true;
+                coll.enabled = true;
+                StartCoroutine(Co_WAttack());
+                CurrentST = 10;
+                StartCoroutine(Slow_ST());
+                Stamina_Time = 0;
+            }
+
+            else if(NextAttackCheck)
+            {
+                AttackDamage = 22;
+                StartCoroutine(Co_WAttack02());
+                CurrentST = 15;
+                StartCoroutine(Slow_ST());
+                Stamina_Time = 0;
+            }
+        }
+
+            if (Input.GetKeyDown(KeyCode.Space) && !JumpCheck && PlayerST >= 5) //점프 버튼 
         {
             animator.SetBool("Jumping", true);
             JumpCheck = true;
             Jumping();
         }
+
+        if(Input.GetKeyDown(KeyCode.A))
+        {
+            StartCoroutine(Guard());
+        }
+
+        else if(Input.GetKeyUp(KeyCode.A))
+        {
+            StartCoroutine(UnGuard());
+        }
+    }
+
+    IEnumerator Guard()
+    {
+        animator.SetBool("Guard", true);
+        GuardCheck = true;
+        yield return null;
+    }
+
+    IEnumerator UnGuard()
+    {
+        animator.SetBool("Guard", false);
+        GuardCheck = false;
+        yield return null;
     }
 
     IEnumerator Recovery_ST()
@@ -85,7 +128,7 @@ public class Player : MonoBehaviour {
         {
             if (Stamina_Time > 0.3f && PlayerST < 100)
             {
-                PlayerST += 1;
+                PlayerST += 1.5f;
             }
             yield return new WaitForSeconds(0.001f);
         } while (true);
@@ -127,25 +170,21 @@ public class Player : MonoBehaviour {
         if (Input.GetKey(KeyCode.LeftArrow) && !AttackCheck)
         {
             animator.SetBool("Running", true);
-            transform.localScale = new Vector3(-0.5f, 0.5f, 1);
+            transform.localScale = new Vector3(-0.8f, 0.8f, 1);
             LR_Check = 0;
-            movepowers = -5;
-            MoveCheck = true;
+            movepowers = -7;
         }
 
         else if (Input.GetKey(KeyCode.RightArrow) && !AttackCheck)
         {
             animator.SetBool("Running", true);
-            movepowers = 5;
-            transform.localScale = new Vector3(0.5f, 0.5f, 1);
+            movepowers = 7;
+            transform.localScale = new Vector3(0.8f, 0.8f, 1);
             LR_Check = 1;
-            MoveCheck = true;
         }
-
         else
         {
             animator.SetBool("Running", false);
-            MoveCheck = false;
         }
 
         if (!JumpCharsh && !AttackCheck)
@@ -165,12 +204,12 @@ public class Player : MonoBehaviour {
     void Rolling() //구르기 
     {
         var Start = transform.position;
-        if (Input.GetKeyDown(KeyCode.LeftShift) && !RollingCheck && PlayerST >= 50) // 구르기 체크
+        if (Input.GetKeyDown(KeyCode.LeftShift) && !RollingCheck && PlayerST >= 25) // 구르기 체크
         {
             animator.SetBool("Rolling", true);
             StartCoroutine(RollingState());
             RollingCheck = true;
-            CurrentST = 50;
+            CurrentST = 25;
             StartCoroutine(Slow_ST());
             Stamina_Time = 0;
         }
@@ -183,19 +222,19 @@ public class Player : MonoBehaviour {
 
         if (LR_Check == 0)
         {
-            transform.localScale = new Vector3(-0.5f, 0.5f, 1);
-            RollVec = Vector3.left * 1.5f;
+            transform.localScale = new Vector3(-0.8f, 0.8f, 1);
+            RollVec = Vector3.left * 2.0f;
         }
 
         else if (LR_Check == 1)
         {
-            transform.localScale = new Vector3(0.5f, 0.5f, 1);
-            RollVec = Vector3.right * 1.5f;
+            transform.localScale = new Vector3(0.8f, 0.8f, 1);
+            RollVec = Vector3.right * 2.0f;
         }
         while (Rollinging < 1f)
         {
             Rollinging += Time.deltaTime / 0.5f;
-            transform.position += RollVec * 8f * Time.deltaTime;
+            transform.position += RollVec * 10f * Time.deltaTime;
             yield return null;
         }
 
@@ -207,60 +246,35 @@ public class Player : MonoBehaviour {
 
     }
 
-    
-
-    public void WAttack_Count() // 첫번째 약공 끝날때
-    {
-        if(WAttackNum == 1)
-        {
-            animator.SetBool("WAttack01", false);
-            AttackCheck = false;
-            WAttackNum = 0;
-            AttackTime = 0;
-            coll.enabled = false;
-        }
-        coll.enabled = false;
-    }
-
-    public void WAttack_NextAttack() // 두번째 약공 끝날때
-    {
-        animator.SetBool("WAttack02", false);
-        WAttackNum = 0;
-        AttackTime = 0;
-        coll.enabled = false;
-        AttackCheck = false;
-    }
-
     public void WAttack_StartColl() // 두번째 약공 다시 켜주기
     {
         coll.enabled = true;
     }
 
-    void WeakAttack() // 약공
+    IEnumerator Co_WAttack()
     {
-        if (Input.GetKeyDown(KeyCode.S) && PlayerST >= 5)
-        {
-            AttackCheck = true;
-            rigid.velocity = Vector2.zero;
-            if (AttackCheck && WAttackNum ==0)
-            {
-                coll.enabled = true;
-                WAttackNum = 1;
-                animator.SetBool("WAttack01", true);
-                CurrentST = 5;
-                StartCoroutine(Slow_ST());
-                Stamina_Time = 0;
-            }
 
-            else if (AttackTime < 1.8f && WAttackNum ==1)
-            {
-                animator.SetBool("WAttack02", true);
-                animator.SetBool("WAttack01", false);
-                WAttackNum = 2;
-                CurrentST = 5;
-                StartCoroutine(Slow_ST());
-            }
-        }
+        rigid.velocity = Vector2.zero;
+        AttackCheck = true;
+        animator.SetBool("WAttack01", true);
+        yield return new WaitForSeconds(0.5f);
+        NextAttackCheck = false;
+        animator.SetBool("WAttack01", false);
+        AttackCheck = false;
+        coll.enabled = false;
+    }
+
+    IEnumerator Co_WAttack02()
+    {
+
+        rigid.velocity = Vector2.zero;
+        AttackCheck = true;
+        animator.SetBool("WAttack02", true);
+        yield return new WaitForSeconds(0.5f);
+        animator.SetBool("WAttack02", false);
+        AttackCheck = false;
+        NextAttackCheck = false;
+        coll.enabled = false;
     }
 
     public void SAttackCheck() //강공격 끝날때
@@ -274,7 +288,8 @@ public class Player : MonoBehaviour {
     {
         if(Input.GetKeyDown(KeyCode.D) && PlayerST >= 5)
         {
-            CurrentST = 5;
+            AttackDamage = 36;
+            CurrentST = 20;
             StartCoroutine(Slow_ST());
             Stamina_Time = 0;
             AttackCheck = true;
@@ -286,6 +301,28 @@ public class Player : MonoBehaviour {
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        
+        if (other.gameObject.tag == "Stone")
+        {
+            Vector2 hitvec = Vector2.zero;
+            if (!GuardCheck)
+            {
+                hitvec = new Vector2(-4f, 7f);
+                CurrentHp = 10;
+                StartCoroutine(Slow_HP());
+                rigid.AddForce(hitvec, ForceMode2D.Impulse);
+            }
+
+            else
+            {
+                CurrentST = 10;
+                StartCoroutine(Slow_ST());
+                Stamina_Time = 0;
+            }
+
+            
+        }
+
         if(other.gameObject.tag == "Ground") // 착지 체크
         {
             JumpCheck = false;
@@ -295,20 +332,47 @@ public class Player : MonoBehaviour {
 
         if (other.gameObject.tag == "Stinger")
         {
-            CurrentHp = 5;
-            StartCoroutine(Slow_HP());
+            Vector2 hitvec2 = Vector2.zero;
+            if(!GuardCheck)
+            {
+                hitvec2 = new Vector2(-4f, 7f);
+                CurrentHp = 10;
+                StartCoroutine(Slow_HP());
+            }
+
+            else
+            {
+                CurrentST = 10;
+                StartCoroutine(Slow_ST());
+                Stamina_Time = 0;
+            }
+            rigid.AddForce(hitvec2, ForceMode2D.Impulse);
         }
 
         if(other.gameObject.tag == "MiniBoss")
         {
-            CurrentHp = 30;
-            StartCoroutine(Slow_HP());
+            Vector2 hitvec3 = Vector2.zero;
+            if (!GuardCheck)
+                if (!GuardCheck)
+            {
+                hitvec3 = new Vector2(-4f, 7f);
+                CurrentHp = 20;
+                StartCoroutine(Slow_HP());
+            }
+
+            else
+            {
+                CurrentST = 10;
+                StartCoroutine(Slow_ST());
+                Stamina_Time = 0;
+            }
+            rigid.AddForce(hitvec3, ForceMode2D.Impulse);
         }
     }
 
     private void OnCollisionEnter2D(Collision2D other)
     {
-        if (other.gameObject.tag == "Boss") // 착지 체크
+        if (other.gameObject.tag == "Boss") 
         {
             JumpCharsh = true;
             //rigid.velocity = Vector2.zero;

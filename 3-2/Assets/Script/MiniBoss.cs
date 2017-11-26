@@ -17,12 +17,12 @@ public class MiniBoss : MonoBehaviour {
         rd = GetComponent<Rigidbody2D>();
         if(boss.BabyNum == 1 || boss.BabyNum == 3 || boss.BabyNum == 4)
         {
-            Angel_move(rd.velocity = new Vector3(5, 5, 0));
+            Angel_move(rd.velocity = new Vector3(10, 10, 0));
             MovePos = false;
         }
         else
         {
-            Angel_move(rd.velocity = new Vector3(-5, 5, 0));
+            Angel_move(rd.velocity = new Vector3(-10, 10, 0));
             MovePos = true;
         }
 
@@ -39,13 +39,13 @@ public class MiniBoss : MonoBehaviour {
             if (MovePos) // true면 왼쪽으로
             {
                 moveVec = Vector3.left;
-                transform.localScale = new Vector3(0.2f, 0.2f, 0f);
+                transform.localScale = new Vector3(1f, 1f, 0f);
             }
 
             else // false 면 오른쪽으로
             {
                 moveVec = Vector3.right;
-                transform.localScale = new Vector3(-0.2f, 0.2f, 0f);
+                transform.localScale = new Vector3(-1f, 1f, 0f);
             }
 
             transform.position += moveVec * 3f * Time.deltaTime;

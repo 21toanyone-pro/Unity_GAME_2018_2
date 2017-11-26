@@ -125,215 +125,250 @@ RBody3
   index: -1
 
 Boss22.png
-size: 1023,1023
+size: 1023,1024
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
 0_1
-  rotate: true
-  xy: 946, 158
+  rotate: false
+  xy: 986, 130
   size: 26, 24
   orig: 26, 24
   offset: 0, 0
   index: -1
 1_1
-  rotate: false
-  xy: 915, 65
+  rotate: true
+  xy: 986, 302
   size: 25, 35
   orig: 25, 35
   offset: 0, 0
   index: -1
 2 head
   rotate: false
-  xy: 2, 361
+  xy: 641, 329
   size: 378, 323
   orig: 378, 323
   offset: 0, 0
   index: -1
-2_2
+2Head 4
   rotate: true
-  xy: 862, 8
-  size: 48, 74
-  orig: 48, 74
+  xy: 402, 659
+  size: 363, 382
+  orig: 363, 382
+  offset: 0, 0
+  index: -1
+2Head 5
+  rotate: true
+  xy: 2, 322
+  size: 363, 382
+  orig: 363, 382
   offset: 0, 0
   index: -1
 2_3
   rotate: false
-  xy: 665, 40
+  xy: 386, 329
   size: 114, 60
   orig: 114, 60
   offset: 0, 0
   index: -1
 3_2
-  rotate: true
-  xy: 665, 12
+  rotate: false
+  xy: 986, 156
   size: 26, 48
   orig: 26, 48
   offset: 0, 0
   index: -1
-3_3
-  rotate: false
-  xy: 957, 193
-  size: 47, 91
-  orig: 47, 91
-  offset: 0, 0
-  index: -1
 3head
-  rotate: false
-  xy: 2, 16
+  rotate: true
+  xy: 641, 2
   size: 325, 343
   orig: 325, 343
   offset: 0, 0
   index: -1
-4_2
-  rotate: false
-  xy: 719, 663
-  size: 44, 43
-  orig: 44, 43
-  offset: 0, 0
-  index: -1
-4_3
-  rotate: false
-  xy: 957, 286
-  size: 49, 138
-  orig: 49, 138
-  offset: 0, 0
-  index: -1
 Head
   rotate: false
-  xy: 402, 708
+  xy: 276, 7
   size: 363, 313
   orig: 363, 313
   offset: 0, 0
   index: -1
-LBody1
-  rotate: false
-  xy: 329, 15
-  size: 228, 344
-  orig: 228, 344
-  offset: 0, 0
-  index: -1
 LBody2
-  rotate: true
-  xy: 402, 434
+  rotate: false
+  xy: 2, 5
   size: 272, 315
   orig: 272, 315
   offset: 0, 0
   index: -1
-LLarm1_1
-  rotate: false
-  xy: 719, 426
-  size: 271, 225
-  orig: 271, 225
-  offset: 0, 0
-  index: -1
-Parts1
-  rotate: true
-  xy: 382, 375
-  size: 57, 121
-  orig: 57, 121
-  offset: 0, 0
-  index: -1
 R0_1
-  rotate: false
-  xy: 1002, 949
+  rotate: true
+  xy: 502, 326
   size: 19, 72
   orig: 19, 72
   offset: 0, 0
   index: -1
 R1_1
   rotate: false
-  xy: 505, 384
+  xy: 986, 252
   size: 28, 48
   orig: 28, 48
   offset: 0, 0
   index: -1
 R2_2
   rotate: true
-  xy: 781, 58
+  xy: 502, 347
   size: 42, 132
   orig: 42, 132
   offset: 0, 0
   index: -1
 R3_1
-  rotate: true
-  xy: 715, 10
+  rotate: false
+  xy: 986, 206
   size: 28, 44
   orig: 28, 44
   offset: 0, 0
   index: -1
-R4_1
-  rotate: true
-  xy: 781, 2
-  size: 54, 79
-  orig: 54, 79
-  offset: 0, 0
-  index: -1
-R4_2
-  rotate: false
-  xy: 559, 25
-  size: 104, 117
-  orig: 104, 117
-  offset: 0, 0
-  index: -1
 RBody1
   rotate: true
-  xy: 767, 653
+  xy: 786, 654
   size: 368, 233
   orig: 368, 233
   offset: 0, 0
   index: -1
 RBody2
   rotate: false
-  xy: 2, 686
+  xy: 2, 687
   size: 398, 335
   orig: 398, 335
   offset: 0, 0
   index: -1
 RRarm1_1
-  rotate: false
-  xy: 689, 186
+  rotate: true
+  xy: 386, 391
   size: 266, 238
   orig: 266, 238
   offset: 0, 0
   index: -1
+
+Boss23.png
+size: 1009,695
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+2Head 2
+  rotate: false
+  xy: 367, 357
+  size: 363, 336
+  orig: 363, 336
+  offset: 0, 0
+  index: -1
+2Head 3
+  rotate: false
+  xy: 2, 325
+  size: 363, 368
+  orig: 363, 368
+  offset: 0, 0
+  index: -1
+2_2
+  rotate: true
+  xy: 905, 17
+  size: 48, 74
+  orig: 48, 74
+  offset: 0, 0
+  index: -1
+3_3
+  rotate: false
+  xy: 856, 15
+  size: 47, 91
+  orig: 47, 91
+  offset: 0, 0
+  index: -1
+4_2
+  rotate: false
+  xy: 961, 103
+  size: 44, 43
+  orig: 44, 43
+  offset: 0, 0
+  index: -1
+4_3
+  rotate: true
+  xy: 597, 16
+  size: 49, 138
+  orig: 49, 138
+  offset: 0, 0
+  index: -1
+Head_3P
+  rotate: false
+  xy: 2, 10
+  size: 363, 313
+  orig: 363, 313
+  offset: 0, 0
+  index: -1
+LBlock
+  rotate: false
+  xy: 732, 254
+  size: 180, 128
+  orig: 180, 128
+  offset: 0, 0
+  index: -1
+LBody1
+  rotate: false
+  xy: 367, 11
+  size: 228, 344
+  orig: 228, 344
+  offset: 0, 0
+  index: -1
+LLarm1_1
+  rotate: false
+  xy: 732, 468
+  size: 271, 225
+  orig: 271, 225
+  offset: 0, 0
+  index: -1
+Parts1
+  rotate: false
+  xy: 914, 261
+  size: 57, 121
+  orig: 57, 121
+  offset: 0, 0
+  index: -1
+R3_2
+  rotate: true
+  xy: 898, 148
+  size: 104, 109
+  orig: 104, 109
+  offset: 0, 0
+  index: -1
+R4_1
+  rotate: false
+  xy: 905, 67
+  size: 54, 79
+  orig: 54, 79
+  offset: 0, 0
+  index: -1
+R4_2
+  rotate: true
+  xy: 737, 2
+  size: 104, 117
+  orig: 104, 117
+  offset: 0, 0
+  index: -1
 RRarm1_2
   rotate: false
-  xy: 559, 144
+  xy: 597, 67
   size: 128, 288
   orig: 128, 288
   offset: 0, 0
   index: -1
 RRarm2
   rotate: false
-  xy: 689, 102
+  xy: 732, 384
   size: 255, 82
   orig: 255, 82
   offset: 0, 0
   index: -1
-
-Boss23.png
-size: 461,148
-format: RGBA8888
-filter: Linear,Linear
-repeat: none
-LBlock
-  rotate: false
-  xy: 173, 18
-  size: 180, 128
-  orig: 180, 128
-  offset: 0, 0
-  index: -1
-R3_2
-  rotate: false
-  xy: 355, 37
-  size: 104, 109
-  orig: 104, 109
-  offset: 0, 0
-  index: -1
 Rarm
   rotate: false
-  xy: 2, 2
+  xy: 727, 108
   size: 169, 144
   orig: 169, 144
   offset: 0, 0

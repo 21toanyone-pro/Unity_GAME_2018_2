@@ -31,6 +31,6 @@ public class Player_State : MonoBehaviour {
         PlayerHP.fillAmount = CurrentHP / MaxHP;
 
         CurrentST = player.PlayerST;
-        PlayerST.fillAmount = CurrentST / MaxHP;
+        PlayerST.fillAmount = CurrentST / MaxST;
     }
 }
