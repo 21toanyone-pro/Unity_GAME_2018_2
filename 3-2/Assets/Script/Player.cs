@@ -7,6 +7,7 @@ public class Player : MonoBehaviour {
     Animator animator;
     Rigidbody2D rigid;
     public Collider2D coll;
+    Boss boss;
 
     public float PlayerHP = 100;
     public float PlayerST = 100;
@@ -34,6 +35,7 @@ public class Player : MonoBehaviour {
         rigid = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         StartCoroutine(Recovery_ST());
+        boss = GameObject.Find("Boss").GetComponent<Boss>();
     }
 
     void FixedUpdate()
@@ -299,6 +301,11 @@ public class Player : MonoBehaviour {
         }
     }
 
+    void Angel_move(Vector3 velocity)
+    {
+        GetComponent<Rigidbody2D>().velocity = velocity;
+    }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         
@@ -319,8 +326,11 @@ public class Player : MonoBehaviour {
                 StartCoroutine(Slow_ST());
                 Stamina_Time = 0;
             }
+        }
 
-            
+        if(other.gameObject.tag=="Boss" && boss.RushCheck)
+        {
+            Angel_move(rigid.velocity = new Vector3(20, 7, 0));
         }
 
         if(other.gameObject.tag == "Ground") // 착지 체크

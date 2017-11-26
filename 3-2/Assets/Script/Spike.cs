@@ -5,6 +5,8 @@ using Spine.Unity;
 using Spine;
 
 public class Spike : MonoBehaviour {
+
+  
     
     //SkeletonAnimation skeleton;
     SkeletonAnimator skeleton;

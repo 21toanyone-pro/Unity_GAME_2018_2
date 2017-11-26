@@ -28,7 +28,7 @@ public class Boss : MonoBehaviour {
     public int BabyNum;
 
     bool HozCheck;
-    bool RushCheck;
+    public bool RushCheck;
     bool UprisingCheck;
     bool WallCheck;
     bool Hit_effect;
@@ -85,6 +85,7 @@ public class Boss : MonoBehaviour {
                     if(paseCheck == 1)
                     {
                        StartCoroutine(Rush_P());
+                        RushCheck = true;
                     }
                     
                     else if(paseCheck ==2)
@@ -130,23 +131,47 @@ public class Boss : MonoBehaviour {
     {
         if (bossstate == BOSSSTATE.IDLE)
         {
-            RandPattern = Random.Range(0, 3);
-            if (RandPattern == 0) // 덮치기 
+            RandPattern = Random.Range(0, 10);
+            if (RandPattern == 0 || RandPattern == 1 || RandPattern == 2 || RandPattern == 3) // 덮치기 
             {
                 bossstate = BOSSSTATE.RUSH;
             }
 
-            else if (RandPattern == 1) //솟아오르기 
+            else if (RandPattern == 4 || RandPattern == 5) //솟아오르기 
             {
                 bossstate = BOSSSTATE.UPRISING;
             }
 
-            else if (RandPattern == 2) //포효 1 
+            else if (RandPattern == 6 || RandPattern == 7 || RandPattern == 8 || RandPattern == 9) //포효 1 
             {
                 bossstate = BOSSSTATE.SHOUT;
             }
         }
-        yield return new WaitForSeconds(4f);
+        yield return new WaitForSeconds(5f);
+        StartCoroutine(Pattern());
+    }
+
+    IEnumerator Pattern2()
+    {
+        if (bossstate == BOSSSTATE.IDLE && paseCheck ==2)
+        {
+            RandPattern = Random.Range(0, 10);
+            if (RandPattern == 0 || RandPattern == 1 || RandPattern == 2 ) // 덮치기 
+            {
+                bossstate = BOSSSTATE.RUSH;
+            }
+
+            else if (RandPattern == 3 || RandPattern == 4) //솟아오르기 
+            {
+                bossstate = BOSSSTATE.UPRISING;
+            }
+
+            else if (RandPattern == 5 || RandPattern == 6 || RandPattern == 7 || RandPattern == 8 || RandPattern == 9) //포효 1 
+            {
+                bossstate = BOSSSTATE.SHOUT;
+            }
+        }
+        yield return new WaitForSeconds(5f);
         StartCoroutine(Pattern());
     }
 
@@ -191,7 +216,7 @@ public class Boss : MonoBehaviour {
 
         yield return new WaitForSeconds(1f);
        
-            for (int i = 0; i < 25; i++)
+            for (int i = 0; i <7; i++)
             {
                 StingerPosR = new Vector3(StingerPosR.x + 3, StingerPosR.y, StingerPosR.z);
                 StingerPosL = new Vector3(StingerPosL.x + -3, StingerPosL.y, StingerPosL.z);
@@ -213,7 +238,16 @@ public class Boss : MonoBehaviour {
     {
         StingerNum += 1;
         yield return new WaitForSeconds(0.8f);
-        Instantiate(groundStinger, pos, Quaternion.identity);
+        if(PlayerPos.transform.position.x > transform.position.x)
+        {
+            Instantiate(gorundStingerR, pos, Quaternion.identity);
+        }
+
+        else if (PlayerPos.transform.position.x < transform.position.x) //요기요
+        {
+            Instantiate(groundStinger, pos, Quaternion.identity);
+        }
+        
         if(StingerNum < 5)
         {
             StartCoroutine(Shout_Stinger(new Vector3(PlayerPos.transform.position.x, -4.691572f, PlayerPos.transform.position.z)));
@@ -376,7 +410,11 @@ public class Boss : MonoBehaviour {
                 transform.localScale = new Vector3(-1.2f, 1.2f, 1.2f);
             }
             t += Time.deltaTime * 2f;
-            transform.position += RushVec * 10 * Time.deltaTime;
+            transform.position += RushVec * 15 * Time.deltaTime;
+            if(WallCheck)
+            {
+                break;
+            }
             yield return null;
         } while (t < 2);
 
@@ -474,13 +512,13 @@ public class Boss : MonoBehaviour {
             paseCheck = 1;
         }
 
-        else if(Boss_HP < 750 && Boss_HP > 75)
+        else if(Boss_HP < 750 && Boss_HP > 150)
         {
             paseCheck = 2;
             ani.SetTrigger("PageChange02");
         }
 
-        else if (Boss_HP <= 75)
+        else if (Boss_HP <= 150)
         {
             paseCheck = 3;
         }
@@ -506,6 +544,12 @@ public class Boss : MonoBehaviour {
             CShacke.shake = 0.5f;
             Invoke("StopShake", 0.5f);
         }
+
+        if(other.gameObject.tag == "Player" && RushCheck)
+        {
+
+        }
+
         if (other.gameObject.tag == "Attackcoll")
         {
             Boss_HP -= player.AttackDamage;
