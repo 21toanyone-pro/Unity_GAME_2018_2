@@ -7,6 +7,8 @@ public class Player : MonoBehaviour {
     Animator animator;
     Rigidbody2D rigid;
     public Collider2D coll;
+    public GameObject BossPos;
+    public SpriteRenderer Shadow;
     Boss boss;
 
     public float PlayerHP = 100;
@@ -16,7 +18,7 @@ public class Player : MonoBehaviour {
     float CurrentST;
     float y = 0; //피채워줌 별거없음
 
-    float JumpPower = 70; // 점프 파워
+    float JumpPower = 60; // 점프 파워
     public float AttackDamage = 0;
 
     bool JumpCheck; // 이중점프 체크
@@ -24,6 +26,7 @@ public class Player : MonoBehaviour {
     bool AttackCheck;
     bool NextAttackCheck;
     bool GuardCheck;
+    bool HitCheck;
 
     public float Stamina_Time = 0f; //스태미나 차는 시간 체크
     public bool RollingCheck; // 구르기 체크
@@ -55,21 +58,21 @@ public class Player : MonoBehaviour {
     // Update is called once per frame
     void Update () {
 
-        if(!RollingCheck) //구르는 중이 아니면 움직임 
+        if(!RollingCheck && !HitCheck) //구르는 중이 아니면 움직임 
         {
-            if (!AttackCheck)
+            if (!AttackCheck && !HitCheck)
             {
                 Moving();
             }
             StrongAttack();
         }
 
-        if (!JumpCheck && !AttackCheck)
+        if (!JumpCheck && !AttackCheck && !HitCheck)
         {
             Rolling(); // 구르기
         }
 
-        if (Input.GetKeyDown(KeyCode.S) && PlayerST >= 5)
+        if (Input.GetKeyDown(KeyCode.S) && PlayerST >= 5 && !HitCheck)
         {
             if (!NextAttackCheck)
             {
@@ -92,14 +95,14 @@ public class Player : MonoBehaviour {
             }
         }
 
-            if (Input.GetKeyDown(KeyCode.Space) && !JumpCheck && PlayerST >= 5) //점프 버튼 
+            if (Input.GetKeyDown(KeyCode.Space) && !JumpCheck && PlayerST >= 5 && !HitCheck) //점프 버튼 
         {
             animator.SetBool("Jumping", true);
             JumpCheck = true;
             Jumping();
         }
 
-        if(Input.GetKeyDown(KeyCode.A))
+        if(Input.GetKeyDown(KeyCode.A) && !HitCheck)
         {
             StartCoroutine(Guard());
         }
@@ -169,7 +172,7 @@ public class Player : MonoBehaviour {
         float movepowers = 0;
        // float Cast = Mathf.Abs(transform.position.x - Boss2.transform.position.x);
 
-        if (Input.GetKey(KeyCode.LeftArrow) && !AttackCheck)
+        if (Input.GetKey(KeyCode.LeftArrow) && !AttackCheck )
         {
             animator.SetBool("Running", true);
             transform.localScale = new Vector3(-0.8f, 0.8f, 1);
@@ -200,6 +203,7 @@ public class Player : MonoBehaviour {
         CurrentST = 5;
         StartCoroutine(Slow_ST());
         Stamina_Time = 0;
+        Shadow.enabled = false;
     }
 
 
@@ -318,6 +322,8 @@ public class Player : MonoBehaviour {
                 CurrentHp = 10;
                 StartCoroutine(Slow_HP());
                 rigid.AddForce(hitvec, ForceMode2D.Impulse);
+                HitCheck = true;
+                Invoke("ReHit", 0.5f);
             }
 
             else
@@ -328,9 +334,22 @@ public class Player : MonoBehaviour {
             }
         }
 
-        if(other.gameObject.tag=="Boss" && boss.RushCheck)
+        if(other.gameObject.tag=="Boss" && boss.RushCheck && !RollingCheck)
         {
-            Angel_move(rigid.velocity = new Vector3(20, 7, 0));
+            if(transform.position.x > BossPos.transform.position.x)
+            {
+                Angel_move(rigid.velocity = new Vector3(20, 7, 0));
+                HitCheck = true;
+                Invoke("ReHit", 0.5f);
+            }
+
+            else
+            {
+                Angel_move(rigid.velocity = new Vector3(-20, 7, 0));
+                HitCheck = true;
+                Invoke("ReHit", 0.5f);
+            }
+           
         }
 
         if(other.gameObject.tag == "Ground") // 착지 체크
@@ -338,6 +357,7 @@ public class Player : MonoBehaviour {
             JumpCheck = false;
             JumpCharsh = false;
             animator.SetBool("Jumping", false);
+            Shadow.enabled = true;
         }
 
         if (other.gameObject.tag == "Stinger")
@@ -348,6 +368,8 @@ public class Player : MonoBehaviour {
                 hitvec2 = new Vector2(-4f, 7f);
                 CurrentHp = 10;
                 StartCoroutine(Slow_HP());
+                HitCheck = true;
+                Invoke("ReHit", 0.5f);
             }
 
             else
@@ -355,6 +377,7 @@ public class Player : MonoBehaviour {
                 CurrentST = 10;
                 StartCoroutine(Slow_ST());
                 Stamina_Time = 0;
+
             }
             rigid.AddForce(hitvec2, ForceMode2D.Impulse);
         }
@@ -362,12 +385,14 @@ public class Player : MonoBehaviour {
         if(other.gameObject.tag == "MiniBoss")
         {
             Vector2 hitvec3 = Vector2.zero;
+
             if (!GuardCheck)
-                if (!GuardCheck)
             {
                 hitvec3 = new Vector2(-4f, 7f);
                 CurrentHp = 20;
                 StartCoroutine(Slow_HP());
+                HitCheck = true;
+                Invoke("ReHit", 0.5f);
             }
 
             else
@@ -387,6 +412,11 @@ public class Player : MonoBehaviour {
             JumpCharsh = true;
             //rigid.velocity = Vector2.zero;
         }
+    }
+
+    void ReHit()
+    {
+        HitCheck = false;
     }
 
     private void OnCollisionStay2D(Collision2D other)
