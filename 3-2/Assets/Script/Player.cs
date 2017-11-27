@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Spine.Unity;
+using Spine;
 
 public class Player : MonoBehaviour {
 
@@ -9,6 +11,7 @@ public class Player : MonoBehaviour {
     public Collider2D coll;
     public GameObject BossPos;
     public SpriteRenderer Shadow;
+    SkeletonAnimator skeleton;
     Boss boss;
 
     public float PlayerHP = 100;
@@ -27,6 +30,8 @@ public class Player : MonoBehaviour {
     bool NextAttackCheck;
     bool GuardCheck;
     bool HitCheck;
+    bool UnHitCheck;
+
 
     public float Stamina_Time = 0f; //스태미나 차는 시간 체크
     public bool RollingCheck; // 구르기 체크
@@ -35,10 +40,12 @@ public class Player : MonoBehaviour {
 
     // Use this for initialization
     void Awake () {
+
         rigid = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         StartCoroutine(Recovery_ST());
         boss = GameObject.Find("Boss").GetComponent<Boss>();
+        skeleton = GetComponent<SkeletonAnimator>();
     }
 
     void FixedUpdate()
@@ -72,7 +79,7 @@ public class Player : MonoBehaviour {
             Rolling(); // 구르기
         }
 
-        if (Input.GetKeyDown(KeyCode.S) && PlayerST >= 5 && !HitCheck)
+        if (Input.GetKeyDown(KeyCode.S) && PlayerST >= 10 && !HitCheck)
         {
             if (!NextAttackCheck)
             {
@@ -85,7 +92,7 @@ public class Player : MonoBehaviour {
                 Stamina_Time = 0;
             }
 
-            else if(NextAttackCheck)
+            else if(NextAttackCheck && PlayerST >= 15)
             {
                 AttackDamage = 22;
                 StartCoroutine(Co_WAttack02());
@@ -95,39 +102,39 @@ public class Player : MonoBehaviour {
             }
         }
 
-            if (Input.GetKeyDown(KeyCode.Space) && !JumpCheck && PlayerST >= 5 && !HitCheck) //점프 버튼 
+        if (Input.GetKeyDown(KeyCode.Space) && !JumpCheck && PlayerST >= 5 && !HitCheck) //점프 버튼 
         {
             animator.SetBool("Jumping", true);
             JumpCheck = true;
             Jumping();
         }
 
-        if(Input.GetKeyDown(KeyCode.A) && !HitCheck)
+        if(Input.GetKeyDown(KeyCode.A) && !HitCheck) // 가드 하기
         {
             StartCoroutine(Guard());
         }
 
-        else if(Input.GetKeyUp(KeyCode.A))
+        else if(Input.GetKeyUp(KeyCode.A)) // 가드 풀기
         {
             StartCoroutine(UnGuard());
         }
     }
 
-    IEnumerator Guard()
+    IEnumerator Guard() //가드 하기
     {
         animator.SetBool("Guard", true);
         GuardCheck = true;
         yield return null;
     }
 
-    IEnumerator UnGuard()
+    IEnumerator UnGuard() // 가드 풀기
     {
         animator.SetBool("Guard", false);
         GuardCheck = false;
         yield return null;
     }
 
-    IEnumerator Recovery_ST()
+    IEnumerator Recovery_ST() //스태미너 회복 
     {
         do
         {
@@ -139,7 +146,7 @@ public class Player : MonoBehaviour {
         } while (true);
     }
 
-    IEnumerator Slow_ST()
+    IEnumerator Slow_ST() //천천히 다는 스태미너
     {
         yield return new WaitForSeconds(0.01f);
         if (y < CurrentST)
@@ -305,7 +312,7 @@ public class Player : MonoBehaviour {
         }
     }
 
-    void Angel_move(Vector3 velocity)
+    void Angel_move(Vector3 velocity) //밀어주기
     {
         GetComponent<Rigidbody2D>().velocity = velocity;
     }
@@ -313,7 +320,7 @@ public class Player : MonoBehaviour {
     private void OnTriggerEnter2D(Collider2D other)
     {
         
-        if (other.gameObject.tag == "Stone")
+        if (other.gameObject.tag == "Stone" && !UnHitCheck && !RollingCheck)
         {
             Vector2 hitvec = Vector2.zero;
             if (!GuardCheck)
@@ -324,6 +331,7 @@ public class Player : MonoBehaviour {
                 rigid.AddForce(hitvec, ForceMode2D.Impulse);
                 HitCheck = true;
                 Invoke("ReHit", 0.5f);
+                StartCoroutine(NoHitTime());
             }
 
             else
@@ -334,13 +342,14 @@ public class Player : MonoBehaviour {
             }
         }
 
-        if(other.gameObject.tag=="Boss" && boss.RushCheck && !RollingCheck)
+        if(other.gameObject.tag=="Boss" && boss.RushCheck && !RollingCheck && !UnHitCheck)
         {
             if(transform.position.x > BossPos.transform.position.x)
             {
                 Angel_move(rigid.velocity = new Vector3(20, 7, 0));
                 HitCheck = true;
                 Invoke("ReHit", 0.5f);
+                StartCoroutine(NoHitTime());
             }
 
             else
@@ -348,8 +357,8 @@ public class Player : MonoBehaviour {
                 Angel_move(rigid.velocity = new Vector3(-20, 7, 0));
                 HitCheck = true;
                 Invoke("ReHit", 0.5f);
+                StartCoroutine(NoHitTime());
             }
-           
         }
 
         if(other.gameObject.tag == "Ground") // 착지 체크
@@ -360,16 +369,17 @@ public class Player : MonoBehaviour {
             Shadow.enabled = true;
         }
 
-        if (other.gameObject.tag == "Stinger")
+        if (other.gameObject.tag == "Stinger" && !UnHitCheck && !RollingCheck)
         {
             Vector2 hitvec2 = Vector2.zero;
             if(!GuardCheck)
             {
-                hitvec2 = new Vector2(-4f, 7f);
+                hitvec2 = new Vector2(-7f, 7f);
                 CurrentHp = 10;
                 StartCoroutine(Slow_HP());
                 HitCheck = true;
                 Invoke("ReHit", 0.5f);
+                StartCoroutine(NoHitTime());
             }
 
             else
@@ -377,12 +387,11 @@ public class Player : MonoBehaviour {
                 CurrentST = 10;
                 StartCoroutine(Slow_ST());
                 Stamina_Time = 0;
-
             }
             rigid.AddForce(hitvec2, ForceMode2D.Impulse);
         }
 
-        if(other.gameObject.tag == "MiniBoss")
+        if(other.gameObject.tag == "MiniBoss" && !UnHitCheck && !RollingCheck) 
         {
             Vector2 hitvec3 = Vector2.zero;
 
@@ -393,6 +402,7 @@ public class Player : MonoBehaviour {
                 StartCoroutine(Slow_HP());
                 HitCheck = true;
                 Invoke("ReHit", 0.5f);
+                StartCoroutine(NoHitTime());
             }
 
             else
@@ -417,6 +427,26 @@ public class Player : MonoBehaviour {
     void ReHit()
     {
         HitCheck = false;
+    }
+
+    IEnumerator NoHitTime()
+    {
+        UnHitCheck = true;
+        int Hited = 0;
+        while (Hited < 3)
+        {
+            if (Hited % 2 == 0)
+            {
+                skeleton.GetComponent<SkeletonAnimator>().skeleton.a = 0.8f;
+            }
+            else
+                skeleton.GetComponent<SkeletonAnimator>().skeleton.a = 1f;
+            yield return new WaitForSeconds(0.1f);
+            Hited++;
+        }
+        skeleton.GetComponent<SkeletonAnimator>().skeleton.a = 1f;
+        yield return new WaitForSeconds(0.2f);
+        UnHitCheck = false;
     }
 
     private void OnCollisionStay2D(Collision2D other)

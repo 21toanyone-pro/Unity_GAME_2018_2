@@ -25,12 +25,9 @@ public class Camera_Con : MonoBehaviour {
 
         //메인 카메라
         Camera mainCamera = Camera.main;
-        Camera BackCamera = GameObject.Find("BackGround Camera").GetComponent<Camera>();
-
         Camera UICameras = GameObject.Find("UI Camera").GetComponent<Camera>();
 
         mainCamera.aspect = targetWidthAspect / targetHeightAspect;
-        BackCamera.aspect = targetWidthAspect / targetHeightAspect;
         UICameras.aspect = targetWidthAspect / targetHeightAspect;
 
         float widthRatio = (float)Screen.width / targetWidthAspect;
@@ -53,11 +50,6 @@ public class Camera_Con : MonoBehaviour {
             mainCamera.rect.y + Mathf.Abs(heightadd),
             mainCamera.rect.width + (widthtadd * 2),
             mainCamera.rect.height + (heightadd * 2));
-        BackCamera.rect = new Rect(
-           BackCamera.rect.x + Mathf.Abs(widthtadd),
-           BackCamera.rect.y + Mathf.Abs(heightadd),
-           BackCamera.rect.width + (widthtadd * 2),
-           BackCamera.rect.height + (heightadd * 2));
         UICameras.rect = new Rect(
            UICameras.rect.x + Mathf.Abs(widthtadd),
            UICameras.rect.y + Mathf.Abs(heightadd),

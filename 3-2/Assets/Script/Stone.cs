@@ -12,7 +12,12 @@ public class Stone : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
-		
+	void Update () {	
 	}
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if(other.gameObject.tag == "Boss" || other.gameObject.tag == "Player")
+            Destroy(gameObject, 1f);
+    }
 }
