@@ -327,12 +327,18 @@ public class Player : MonoBehaviour {
         if(PlayerHP >0)
         {
             animator.SetBool("RushHit", false);
+            RushHit = false;
         }
     }
 
     void Angel_move(Vector3 velocity) //밀어주기
     {
         GetComponent<Rigidbody2D>().velocity = velocity;
+    }
+
+    void VectorAdd(Vector2 Addforce)
+    {
+        rigid.AddForce(Addforce, ForceMode2D.Impulse);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -349,7 +355,7 @@ public class Player : MonoBehaviour {
                 hitvec = new Vector2(-4f, 7f);
                 CurrentHp = 10;
                 StartCoroutine(Slow_HP());
-                rigid.AddForce(hitvec, ForceMode2D.Impulse);
+                
                 HitCheck = true;
                 Invoke("ReHit", 0.5f);
                 StartCoroutine(NoHitTime());
@@ -365,11 +371,11 @@ public class Player : MonoBehaviour {
 
         if(other.gameObject.tag=="Boss" && boss.RushCheck && !RollingCheck && !UnHitCheck)
         {
-            if(transform.position.x > BossPos.transform.position.x)
+            if (transform.position.x > BossPos.transform.position.x)
             {
                 animator.SetBool("HitCheck", true);
                 RushHit = true;
-                Angel_move(rigid.velocity = new Vector3(20, 7, 0));
+                VectorAdd(new Vector2(120f, 60f));
                 HitCheck = true;
                 Invoke("ReHit", 0.5f);
                 StartCoroutine(NoHitTime());
@@ -379,7 +385,7 @@ public class Player : MonoBehaviour {
             {
                 animator.SetBool("HitCheck", true);
                 RushHit = true;
-                Angel_move(rigid.velocity = new Vector3(-20, 7, 0));
+                VectorAdd(new Vector2(-120f, 60f));
                 HitCheck = true;
                 Invoke("ReHit", 0.5f);
                 StartCoroutine(NoHitTime());
@@ -392,6 +398,11 @@ public class Player : MonoBehaviour {
             JumpCharsh = false;
             animator.SetBool("Jumping", false);
             Shadow.enabled = true;
+
+            if(RushHit)
+            {
+                DeathCheck();
+            }
         }
 
         if (other.gameObject.tag == "Stinger" && !UnHitCheck && !RollingCheck)
@@ -399,8 +410,6 @@ public class Player : MonoBehaviour {
             Vector2 hitvec2 = Vector2.zero;
             if(!GuardCheck)
             {
-                HitRandNum = Random.Range(1, 3);
-                animator.SetInteger("HitNum", HitRandNum);
                 animator.SetBool("HitCheck", true);
                 hitvec2 = new Vector2(-7f, 7f);
                 CurrentHp = 10;
@@ -425,8 +434,6 @@ public class Player : MonoBehaviour {
 
             if (!GuardCheck)
             {
-                HitRandNum = Random.Range(1, 3);
-                animator.SetInteger("HitNum", HitRandNum);
                 animator.SetBool("HitCheck", true);
                 hitvec3 = new Vector2(-4f, 7f);
                 CurrentHp = 20;

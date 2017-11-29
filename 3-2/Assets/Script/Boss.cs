@@ -33,6 +33,7 @@ public class Boss : MonoBehaviour {
     public bool RushCheck;
     bool WallCheck;
     bool Hit_effect;
+    bool RushHitCheck; //맞았는지 안맞았는지
 
     int paseCheck; // 1, 2, 3 = 페이즈 1,2,3
 
@@ -420,8 +421,14 @@ public class Boss : MonoBehaviour {
             }
             t += Time.deltaTime * 2f;
             transform.position += RushVec * 15 * Time.deltaTime;
-            if(WallCheck)
+            if(WallCheck) break; // 벽에 닿으면 멈춤
+            if (RushHitCheck) // 플레이어에 닿으면 멈춤;
             {
+                RushHitCheck = false;
+                RushCheck = false;
+                yield return new WaitForSeconds(0.5f);
+                ani.SetBool("Rushing", false);
+                bossstate = BOSSSTATE.IDLE;
                 break;
             }
             yield return null;
@@ -560,7 +567,7 @@ public class Boss : MonoBehaviour {
 
         if(other.gameObject.tag == "Player" && RushCheck)
         {
-
+            RushHitCheck = true;
         }
 
         if (other.gameObject.tag == "Attackcoll" && paseCheck !=3)
