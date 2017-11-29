@@ -151,6 +151,7 @@
     <Compile Include="Assets\Spine\spine-unity\SkeletonUtility\Editor\SkeletonUtilityInspector.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\Bone\Block.atlas.txt" />
     <None Include="Assets\Bone\Boss2.atlas.txt" />
     <None Include="Assets\Bone\Character.atlas.txt" />
     <None Include="Assets\Bone\Mini_boss\Boss2.atlas.txt" />

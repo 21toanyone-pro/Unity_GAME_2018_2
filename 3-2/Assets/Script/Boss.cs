@@ -12,26 +12,25 @@ public class Boss : MonoBehaviour {
     public GameObject World_Stinger;
     public GameObject Stones;
     public GameObject Baby; // 새끼들
-    public GameObject[] StoneDrop = new GameObject[20];
+    public GameObject[] StoneDrop = new GameObject[11];
     public GameObject[] BabyPos = new GameObject[5];
     public GameObject[] BloodPos = new GameObject[2];
     public GameObject Blood_effect;
-
-
     SkeletonAnimator skeleton;
     Camera_Shake CShacke;
     Animator ani;
     Player player;
     public Collider2D coll;
+    public Collider2D RushColl;
 
     public float Boss_HP = 2000f;
     int RandPattern;
+    int RandPattern02;
     int StingerNum;
     public int BabyNum;
 
     bool HozCheck;
     public bool RushCheck;
-    bool UprisingCheck;
     bool WallCheck;
     bool Hit_effect;
 
@@ -63,7 +62,8 @@ public class Boss : MonoBehaviour {
 
                 case BOSSSTATE.IDLE:
                     StartCoroutine(BossMove());
-                    if(paseCheck == 3)
+                    RushColl.enabled = false;
+                    if (paseCheck == 3)
                     {
                         bossstate = BOSSSTATE.PAGE03;
                     }
@@ -89,12 +89,14 @@ public class Boss : MonoBehaviour {
                     {
                         StartCoroutine(Rush_P());
                         RushCheck = true;
+                        RushColl.enabled = true;
                     }
                     
                     else if(paseCheck ==2)
                     {
                         StartCoroutine(Rush_Pase2());
                         RushCheck = true;
+                        RushColl.enabled = true;
                     }
                     bossstate = BOSSSTATE.WAIT;
                     break;
@@ -117,7 +119,7 @@ public class Boss : MonoBehaviour {
                     break;
 
                 case BOSSSTATE.PAGE02:
-
+                    Invoke("Page2end", 1.5f);
                     bossstate = BOSSSTATE.WAIT;
                     break;
 
@@ -152,6 +154,7 @@ public class Boss : MonoBehaviour {
             }
         }
         yield return new WaitForSeconds(4f);
+
         StartCoroutine(Pattern());
     }
 
@@ -159,21 +162,22 @@ public class Boss : MonoBehaviour {
     {
         if (bossstate == BOSSSTATE.IDLE && paseCheck ==2)
         {
-            RandPattern = Random.Range(0, 10);
-            if (RandPattern == 0 || RandPattern == 1 || RandPattern == 2 ) // 덮치기 
+            RandPattern02 = Random.Range(0, 10);
+            if (RandPattern02 == 0 || RandPattern02 == 1 || RandPattern02 == 2 ) // 덮치기 
             {
                 bossstate = BOSSSTATE.RUSH;
             }
 
-            else if (RandPattern == 3 || RandPattern == 4) //솟아오르기 
+            else if (RandPattern02 == 3 || RandPattern02 == 4) //솟아오르기 
             {
                 bossstate = BOSSSTATE.UPRISING;
             }
 
-            else if (RandPattern == 5 || RandPattern == 6 || RandPattern == 7 || RandPattern == 8 || RandPattern == 9) //포효 1 
+            else if (RandPattern02 == 5 || RandPattern02 == 6 || RandPattern02 == 7 || RandPattern02 == 8 || RandPattern02 == 9) //포효 1 
             {
                 bossstate = BOSSSTATE.SHOUT;
             }
+            
         }
         yield return new WaitForSeconds(4f);
         StartCoroutine(Pattern2());
@@ -181,6 +185,7 @@ public class Boss : MonoBehaviour {
 
     public void Page2end()
     {
+        paseCheck = 2;
         bossstate = BOSSSTATE.IDLE;
     }
 
@@ -282,13 +287,13 @@ public class Boss : MonoBehaviour {
 
     IEnumerator Drop_Stone() //돌 떨어짐
     {
-        int[] randArray = new int[10];
+        int[] randArray = new int[6];
         bool isSame;
-        for(int i =0; i< 10; i++)
+        for(int i =0; i< 6; i++)
         {
             while(true)
             {
-                randArray[i] = Random.Range(0, 20);
+                randArray[i] = Random.Range(0, 11);
                 isSame = false;
                 for(int j =0; j< i; ++j)
                 {
@@ -511,15 +516,17 @@ public class Boss : MonoBehaviour {
     {
         float Cast = Mathf.Abs(transform.position.x - PlayerPos.transform.position.x);
 
-        if(Boss_HP >= 750)
+        if (Boss_HP >= 750)
         {
             paseCheck = 1;
         }
 
-        else if(Boss_HP < 750 && Boss_HP > 150)
+        else if (Boss_HP < 750 && Boss_HP > 150)
         {
-            paseCheck = 2;
-            bossstate = BOSSSTATE.PAGE02;
+            if (paseCheck == 1)
+            {
+                bossstate = BOSSSTATE.PAGE02;
+            }
             ani.SetTrigger("PageChange02");
         }
 
@@ -528,13 +535,14 @@ public class Boss : MonoBehaviour {
             paseCheck = 3;
         }
 
+  
         // 여긴 못지나가게 체크
-        if (player.RollingCheck && Cast < 4.5f)
+        if (player.RollingCheck && Cast < 4.5f || paseCheck == 3)
         {
             coll.enabled = false;
         }
 
-        else if (!player.RollingCheck && Cast > 4.5f)
+        else if (!player.RollingCheck && Cast > 4.5f && paseCheck !=3)
         {
             coll.enabled = true;
         }
@@ -542,7 +550,7 @@ public class Boss : MonoBehaviour {
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.tag == "Wall" && paseCheck ==2)
+        if (other.gameObject.tag == "Wall" && paseCheck ==2 && RushCheck)
         {
             WallCheck = true;
             CShacke.enabled = true;
@@ -555,27 +563,30 @@ public class Boss : MonoBehaviour {
 
         }
 
-        if (other.gameObject.tag == "Attackcoll")
+        if (other.gameObject.tag == "Attackcoll" && paseCheck !=3)
         {
-            float Vec = 0f;
-            BabyNum = Random.Range(0, 2);
-            if(BabyNum == 0)
-            {
-                Vec = -60.617f;
-            }
-            else
-            {
-                Vec = 60.617f;
-            }
-            Instantiate(Blood_effect, BloodPos[BabyNum].transform.position, Quaternion.Euler(0, 0, Vec));
+            StartCoroutine(HitEffect());
             Boss_HP -= player.AttackDamage;
             StartCoroutine(Hit_Image());
         }
     }
 
+
     IEnumerator HitEffect()
     {
+        float Vec = 0f;
+        if (transform.position.x > PlayerPos.transform.position.x)
+        {
+            Vec = -60f;
+        }
 
+        if (transform.position.x < PlayerPos.transform.position.x)
+        {
+            Vec = 60f;
+        }
+        
+        GameObject blood = Instantiate(Blood_effect, BloodPos[1].transform.position, Quaternion.Euler(0, 0, Vec));
+        blood.transform.parent = this.transform;
         yield return null;
     }
 

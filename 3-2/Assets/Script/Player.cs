@@ -31,12 +31,14 @@ public class Player : MonoBehaviour {
     bool GuardCheck;
     bool HitCheck;
     bool UnHitCheck;
+    bool RushHit;
 
 
     public float Stamina_Time = 0f; //스태미나 차는 시간 체크
     public bool RollingCheck; // 구르기 체크
 
     int LR_Check = 1; // 좌우 체크
+    int HitRandNum;
 
     // Use this for initialization
     void Awake () {
@@ -312,6 +314,22 @@ public class Player : MonoBehaviour {
         }
     }
 
+    public void RushCheck()
+    {
+        if(RushHit)
+        {
+            animator.SetBool("RushHit", true);
+        }
+    }
+
+    public void DeathCheck()
+    {
+        if(PlayerHP >0)
+        {
+            animator.SetBool("RushHit", false);
+        }
+    }
+
     void Angel_move(Vector3 velocity) //밀어주기
     {
         GetComponent<Rigidbody2D>().velocity = velocity;
@@ -325,6 +343,9 @@ public class Player : MonoBehaviour {
             Vector2 hitvec = Vector2.zero;
             if (!GuardCheck)
             {
+                HitRandNum = Random.Range(1, 3);
+                animator.SetInteger("HitNum", HitRandNum);
+                animator.SetBool("HitCheck", true);
                 hitvec = new Vector2(-4f, 7f);
                 CurrentHp = 10;
                 StartCoroutine(Slow_HP());
@@ -346,6 +367,8 @@ public class Player : MonoBehaviour {
         {
             if(transform.position.x > BossPos.transform.position.x)
             {
+                animator.SetBool("HitCheck", true);
+                RushHit = true;
                 Angel_move(rigid.velocity = new Vector3(20, 7, 0));
                 HitCheck = true;
                 Invoke("ReHit", 0.5f);
@@ -354,6 +377,8 @@ public class Player : MonoBehaviour {
 
             else
             {
+                animator.SetBool("HitCheck", true);
+                RushHit = true;
                 Angel_move(rigid.velocity = new Vector3(-20, 7, 0));
                 HitCheck = true;
                 Invoke("ReHit", 0.5f);
@@ -374,6 +399,9 @@ public class Player : MonoBehaviour {
             Vector2 hitvec2 = Vector2.zero;
             if(!GuardCheck)
             {
+                HitRandNum = Random.Range(1, 3);
+                animator.SetInteger("HitNum", HitRandNum);
+                animator.SetBool("HitCheck", true);
                 hitvec2 = new Vector2(-7f, 7f);
                 CurrentHp = 10;
                 StartCoroutine(Slow_HP());
@@ -397,6 +425,9 @@ public class Player : MonoBehaviour {
 
             if (!GuardCheck)
             {
+                HitRandNum = Random.Range(1, 3);
+                animator.SetInteger("HitNum", HitRandNum);
+                animator.SetBool("HitCheck", true);
                 hitvec3 = new Vector2(-4f, 7f);
                 CurrentHp = 20;
                 StartCoroutine(Slow_HP());
@@ -445,8 +476,9 @@ public class Player : MonoBehaviour {
             Hited++;
         }
         skeleton.GetComponent<SkeletonAnimator>().skeleton.a = 1f;
-        yield return new WaitForSeconds(0.2f);
+        yield return null;
         UnHitCheck = false;
+        animator.SetBool("HitCheck", false);
     }
 
     private void OnCollisionStay2D(Collision2D other)

@@ -92,6 +92,7 @@
     <Compile Include="Assets\Script\Player_State.cs" />
     <Compile Include="Assets\Script\Spike.cs" />
     <Compile Include="Assets\Script\Stone.cs" />
+    <Compile Include="Assets\Script\Tittle_Button.cs" />
     <Compile Include="Assets\Spine\spine-csharp\Animation.cs" />
     <Compile Include="Assets\Spine\spine-csharp\AnimationState.cs" />
     <Compile Include="Assets\Spine\spine-csharp\AnimationStateData.cs" />
@@ -175,6 +176,7 @@
     <Compile Include="Assets\Spine\spine-unity\SpineAttributes.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\Bone\Block.atlas.txt" />
     <None Include="Assets\Bone\Boss2.atlas.txt" />
     <None Include="Assets\Bone\Character.atlas.txt" />
     <None Include="Assets\Bone\Mini_boss\Boss2.atlas.txt" />

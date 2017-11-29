@@ -1,138 +1,152 @@
 
 Character.png
-size: 609,536
+size: 957,367
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
 Belt
   rotate: false
-  xy: 483, 43
+  xy: 104, 4
   size: 68, 57
   orig: 68, 57
   offset: 0, 0
   index: -1
 Body
   rotate: false
-  xy: 119, 12
+  xy: 625, 147
   size: 95, 218
   orig: 95, 218
   offset: 0, 0
   index: -1
 Head
-  rotate: false
-  xy: 455, 257
+  rotate: true
+  xy: 593, 11
   size: 133, 114
   orig: 133, 114
   offset: 0, 0
   index: -1
 Head2
   rotate: false
-  xy: 351, 74
+  xy: 825, 252
   size: 130, 113
   orig: 130, 113
   offset: 0, 0
   index: -1
 Head3
-  rotate: false
-  xy: 216, 73
+  rotate: true
+  xy: 709, 12
   size: 133, 114
   orig: 133, 114
   offset: 0, 0
   index: -1
+Head4
+  rotate: false
+  xy: 825, 137
+  size: 130, 113
+  orig: 130, 113
+  offset: 0, 0
+  index: -1
+Head5
+  rotate: true
+  xy: 825, 5
+  size: 130, 113
+  orig: 130, 113
+  offset: 0, 0
+  index: -1
 Larm1
   rotate: true
-  xy: 451, 200
+  xy: 174, 6
   size: 55, 89
   orig: 55, 89
   offset: 0, 0
   index: -1
 Larm2
-  rotate: true
-  xy: 366, 29
+  rotate: false
+  xy: 722, 147
   size: 43, 103
   orig: 43, 103
   offset: 0, 0
   index: -1
 Lleg1
   rotate: false
-  xy: 528, 398
+  xy: 512, 4
   size: 79, 136
   orig: 79, 136
   offset: 0, 0
   index: -1
 Lleg2
   rotate: true
-  xy: 216, 14
+  xy: 2, 4
   size: 57, 100
   orig: 57, 100
   offset: 0, 0
   index: -1
 Lleg3
   rotate: true
-  xy: 553, 33
+  xy: 313, 4
   size: 67, 46
   orig: 67, 46
   offset: 0, 0
   index: -1
 Rarm1
   rotate: true
-  xy: 373, 210
+  xy: 361, 21
   size: 50, 76
   orig: 50, 76
   offset: 0, 0
   index: -1
 Rarm2
-  rotate: false
-  xy: 483, 102
+  rotate: true
+  xy: 722, 284
   size: 81, 96
   orig: 81, 96
   offset: 0, 0
   index: -1
 Rleg1
-  rotate: true
-  xy: 234, 189
+  rotate: false
+  xy: 439, 3
   size: 71, 137
   orig: 71, 137
   offset: 0, 0
   index: -1
 Rleg2
   rotate: false
-  xy: 566, 165
+  xy: 767, 192
   size: 41, 90
   orig: 41, 90
   offset: 0, 0
   index: -1
 Rleg3
   rotate: true
-  xy: 318, 2
+  xy: 265, 2
   size: 69, 46
   orig: 69, 46
   offset: 0, 0
   index: -1
 Slash_01
   rotate: false
-  xy: 2, 232
+  xy: 2, 63
   size: 230, 302
   orig: 230, 302
   offset: 0, 0
   index: -1
 Sword
-  rotate: false
-  xy: 234, 373
+  rotate: true
+  xy: 234, 73
   size: 292, 161
   orig: 292, 161
   offset: 0, 0
   index: -1
 shield
-  rotate: true
-  xy: 234, 262
+  rotate: false
+  xy: 514, 146
   size: 109, 219
   orig: 109, 219
   offset: 0, 0
   index: -1
 shield2
   rotate: false
-  xy: 2, 7
+  xy: 397, 142
   size: 115, 223
   orig: 115, 223
   offset: 0, 0
