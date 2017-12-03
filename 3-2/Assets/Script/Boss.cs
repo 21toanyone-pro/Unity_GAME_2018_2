@@ -4,6 +4,7 @@ using UnityEngine;
 using Spine.Unity;
 using Spine;
 
+[RequireComponent(typeof(AudioSource))]
 public class Boss : MonoBehaviour {
 
     public GameObject PlayerPos;
@@ -16,18 +17,36 @@ public class Boss : MonoBehaviour {
     public GameObject[] BabyPos = new GameObject[5];
     public GameObject[] BloodPos = new GameObject[2];
     public GameObject Blood_effect;
+
+    /// <summary>
+    /// 오디오
+    /// </summary>
+    AudioSource ShoutSource;
+    public AudioSource HitSource;
+    public AudioClip Shout;
+    public AudioClip UprisingSound;
+    public AudioClip Burrow;
+    public AudioClip Rush;
+    public AudioClip HitSound;
+
+
     SkeletonAnimator skeleton;
     Camera_Shake CShacke;
     Animator ani;
     Player player;
+    Rigidbody2D rigid;
+    Camera_zoom Zoom;
     public Collider2D coll;
     public Collider2D RushColl;
+    
 
-    public float Boss_HP = 2000f;
+    public float Boss_HP = 1500f;
     int RandPattern;
     int RandPattern02;
     int StingerNum;
     public int BabyNum;
+
+    public bool SleepOn; // 이때부터 행동
 
     bool HozCheck;
     public bool RushCheck;
@@ -38,7 +57,7 @@ public class Boss : MonoBehaviour {
     int paseCheck; // 1, 2, 3 = 페이즈 1,2,3
 
     public enum BOSSSTATE { SLEEP, IDLE, UPRISING, RUSH, SHOUT, SHOUT2, WAIT, MOVE, DEATH, PAGE03, PAGE02,BABY }
-    BOSSSTATE bossstate = BOSSSTATE.IDLE;
+    BOSSSTATE bossstate = BOSSSTATE.SLEEP;
 
     // Use this for initialization
     void Awake () {
@@ -46,10 +65,13 @@ public class Boss : MonoBehaviour {
         StartCoroutine(Pattern());
         StartCoroutine(Pattern2());
         player = GameObject.Find("Player").GetComponent<Player>();
+        Zoom = GameObject.Find("Main Camera").GetComponent<Camera_zoom>();
         CShacke = GameObject.Find("Main Camera").GetComponent<Camera_Shake>();
         ani = GetComponent<Animator>();
         skeleton = GetComponent<SkeletonAnimator>();
+        rigid = GetComponent<Rigidbody2D>();
         CShacke.enabled = false;
+        ShoutSource = GetComponent<AudioSource>(); // 기본 오디오
     }
 
     IEnumerator FSM()
@@ -59,6 +81,10 @@ public class Boss : MonoBehaviour {
             switch (bossstate)
             {
                 case BOSSSTATE.SLEEP:
+                    if(SleepOn)
+                    {
+                        bossstate = BOSSSTATE.IDLE;
+                    }
                     break;
 
                 case BOSSSTATE.IDLE:
@@ -67,6 +93,7 @@ public class Boss : MonoBehaviour {
                     if (paseCheck == 3)
                     {
                         bossstate = BOSSSTATE.PAGE03;
+                        coll.enabled = false;
                     }
                     break;
 
@@ -88,6 +115,9 @@ public class Boss : MonoBehaviour {
                 case BOSSSTATE.RUSH: // 덮치기 (플레이어가 있는 방향으로 빠르게 이동)
                     if(paseCheck == 1)
                     {
+                        ShoutSource.clip = Rush;
+                        ShoutSource.Play();
+                        
                         StartCoroutine(Rush_P());
                         RushCheck = true;
                         RushColl.enabled = true;
@@ -95,6 +125,7 @@ public class Boss : MonoBehaviour {
                     
                     else if(paseCheck ==2)
                     {
+
                         StartCoroutine(Rush_Pase2());
                         RushCheck = true;
                         RushColl.enabled = true;
@@ -103,6 +134,8 @@ public class Boss : MonoBehaviour {
                     break;
 
                 case BOSSSTATE.SHOUT: // 포효1 (플레이어가 서있는 위치에 0.8초마다 가시가 솟아오름)
+                    ShoutSource.clip = Shout;
+                    ShoutSource.Play();
                     ani.SetBool("Shoting", true);
                     StingerNum = 0;
                     bossstate = BOSSSTATE.WAIT;
@@ -110,7 +143,6 @@ public class Boss : MonoBehaviour {
 
                 case BOSSSTATE.DEATH:
                     break;
-
                 case BOSSSTATE.WAIT:
                     break;
                 case BOSSSTATE.PAGE03:
@@ -544,12 +576,12 @@ public class Boss : MonoBehaviour {
 
   
         // 여긴 못지나가게 체크
-        if (player.RollingCheck && Cast < 4.5f || paseCheck == 3)
+        if ((player.RollingCheck && Cast < 4.8f))
         {
             coll.enabled = false;
         }
 
-        else if (!player.RollingCheck && Cast > 4.5f && paseCheck !=3)
+        else if (!player.RollingCheck && Cast > 4.8f && paseCheck !=3)
         {
             coll.enabled = true;
         }
@@ -575,6 +607,7 @@ public class Boss : MonoBehaviour {
             StartCoroutine(HitEffect());
             Boss_HP -= player.AttackDamage;
             StartCoroutine(Hit_Image());
+            HitSource.Play();
         }
     }
 

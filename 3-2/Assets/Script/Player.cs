@@ -4,6 +4,7 @@ using UnityEngine;
 using Spine.Unity;
 using Spine;
 
+[RequireComponent(typeof(AudioSource))]
 public class Player : MonoBehaviour {
 
     Animator animator;
@@ -14,6 +15,18 @@ public class Player : MonoBehaviour {
     SkeletonAnimator skeleton;
     Boss boss;
 
+    AudioSource PlayerSource;
+    public AudioClip SAttack_S;
+    public AudioClip WAttack_S01;
+    public AudioClip WAttack_S02;
+    public AudioClip Rolling_S;
+    public AudioClip Defence_S;
+    public AudioClip Move_S;
+    public AudioClip Jump_S;
+    public AudioClip Hit_S;
+    public AudioClip Landing_S;
+
+
     public float PlayerHP = 100;
     public float PlayerST = 100;
 
@@ -21,24 +34,26 @@ public class Player : MonoBehaviour {
     float CurrentST;
     float y = 0; //피채워줌 별거없음
 
-    float JumpPower = 60; // 점프 파워
+    float JumpPower = 10; // 점프 파워
     public float AttackDamage = 0;
 
     bool JumpCheck; // 이중점프 체크
     bool JumpCharsh; // 점프중 부딫힘
-    bool AttackCheck;
-    bool NextAttackCheck;
-    bool GuardCheck;
-    bool HitCheck;
-    bool UnHitCheck;
-    bool RushHit;
+    bool AttackCheck; //공격중 체크
+    bool NextAttackCheck; // 다음 공격 켜져있나
+    bool GuardCheck; // 땅이 닿았는지 체크
+    bool HitCheck; // 맞았는지 체크
+    bool UnHitCheck; // 안맞는 시간
+    bool RushHit; // 상대 돌진중에 맞는거
+
+    public bool CheckPoint;
 
 
     public float Stamina_Time = 0f; //스태미나 차는 시간 체크
     public bool RollingCheck; // 구르기 체크
 
     int LR_Check = 1; // 좌우 체크
-    int HitRandNum;
+    int HitRandNum; // 
 
     // Use this for initialization
     void Awake () {
@@ -48,6 +63,16 @@ public class Player : MonoBehaviour {
         StartCoroutine(Recovery_ST());
         boss = GameObject.Find("Boss").GetComponent<Boss>();
         skeleton = GetComponent<SkeletonAnimator>();
+        PlayerSource = GetComponent<AudioSource>();
+        InvokeRepeating("WalkSound", 0.0f, 0.5f);
+    }
+
+    void WalkSound()
+    {
+        if ((Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow)) && !JumpCheck)
+        {
+            PlayerSource.PlayOneShot(Move_S);
+        }
     }
 
     void FixedUpdate()
@@ -69,29 +94,31 @@ public class Player : MonoBehaviour {
 
         if(!RollingCheck && !HitCheck) //구르는 중이 아니면 움직임 
         {
-            if (!AttackCheck && !HitCheck)
+            if (!AttackCheck && !HitCheck && !UnHitCheck)
             {
                 Moving();
             }
             StrongAttack();
         }
 
-        if (!JumpCheck && !AttackCheck && !HitCheck)
+        if (!JumpCheck && !AttackCheck && !HitCheck && !UnHitCheck)
         {
             Rolling(); // 구르기
         }
 
-        if (Input.GetKeyDown(KeyCode.S) && PlayerST >= 10 && !HitCheck)
+        if (Input.GetKeyDown(KeyCode.S) && PlayerST >= 10 && !HitCheck && !UnHitCheck)
         {
-            if (!NextAttackCheck)
+            if (!NextAttackCheck) // 만약 어택 다음 공격  체크가 안되있으면
             {
-                AttackDamage = 20;
-                NextAttackCheck = true;
-                coll.enabled = true;
-                StartCoroutine(Co_WAttack());
-                CurrentST = 10;
-                StartCoroutine(Slow_ST());
+                AttackDamage = 20; //대미지 20
+                NextAttackCheck = true; //다음 어택 체크를 트루로
+                coll.enabled = true; //출동 박스를 켜줌
+                StartCoroutine(Co_WAttack()); // 공격 코루틴 실행
+                CurrentST = 10; //스테미너
+                StartCoroutine(Slow_ST()); // 스테미너 다는거
                 Stamina_Time = 0;
+                PlayerSource.clip = WAttack_S01;
+                PlayerSource.Play();
             }
 
             else if(NextAttackCheck && PlayerST >= 15)
@@ -101,19 +128,25 @@ public class Player : MonoBehaviour {
                 CurrentST = 15;
                 StartCoroutine(Slow_ST());
                 Stamina_Time = 0;
+                PlayerSource.clip = WAttack_S02;
+                PlayerSource.Play();
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) && !JumpCheck && PlayerST >= 5 && !HitCheck) //점프 버튼 
+        if (Input.GetKeyDown(KeyCode.Space) && !JumpCheck && PlayerST >= 5 && !HitCheck && !UnHitCheck) //점프 버튼 
         {
+            PlayerSource.clip = Jump_S;
+            PlayerSource.Play();
             animator.SetBool("Jumping", true);
             JumpCheck = true;
             Jumping();
         }
 
-        if(Input.GetKeyDown(KeyCode.A) && !HitCheck) // 가드 하기
+        if(Input.GetKeyDown(KeyCode.A) && !HitCheck && !UnHitCheck) // 가드 하기
         {
             StartCoroutine(Guard());
+            PlayerSource.clip = Defence_S;
+            PlayerSource.Play();
         }
 
         else if(Input.GetKeyUp(KeyCode.A)) // 가드 풀기
@@ -181,7 +214,7 @@ public class Player : MonoBehaviour {
         float movepowers = 0;
        // float Cast = Mathf.Abs(transform.position.x - Boss2.transform.position.x);
 
-        if (Input.GetKey(KeyCode.LeftArrow) && !AttackCheck )
+        if (Input.GetKey(KeyCode.LeftArrow) && !AttackCheck)
         {
             animator.SetBool("Running", true);
             transform.localScale = new Vector3(-0.8f, 0.8f, 1);
@@ -219,7 +252,7 @@ public class Player : MonoBehaviour {
     void Rolling() //구르기 
     {
         var Start = transform.position;
-        if (Input.GetKeyDown(KeyCode.LeftShift) && !RollingCheck && PlayerST >= 25) // 구르기 체크
+        if (Input.GetKeyDown(KeyCode.LeftShift) && !RollingCheck && PlayerST >= 25 && !UnHitCheck) // 구르기 체크
         {
             animator.SetBool("Rolling", true);
             StartCoroutine(RollingState());
@@ -227,29 +260,32 @@ public class Player : MonoBehaviour {
             CurrentST = 25;
             StartCoroutine(Slow_ST());
             Stamina_Time = 0;
+            PlayerSource.clip = Rolling_S;
+            PlayerSource.Play();
         }
     }
 
     IEnumerator RollingState()
     {
-        Vector3 RollVec = Vector3.zero;
+        //Vector3 RollVec = new Vector3(transform.position.x + 3f, transform.position.y, transform.position.z);
+        rigid.velocity = Vector2.zero;
         float Rollinging = 0f;
 
         if (LR_Check == 0)
         {
             transform.localScale = new Vector3(-0.8f, 0.8f, 1);
-            RollVec = Vector3.left * 2.0f;
+            VectorAdd(new Vector2(-25f, 0f));
         }
 
         else if (LR_Check == 1)
         {
             transform.localScale = new Vector3(0.8f, 0.8f, 1);
-            RollVec = Vector3.right * 2.0f;
+            VectorAdd(new Vector2(25f, 0f));
         }
         while (Rollinging < 1f)
         {
             Rollinging += Time.deltaTime / 0.5f;
-            transform.position += RollVec * 10f * Time.deltaTime;
+            //transform.position += RollVec * 10f * Time.deltaTime;
             yield return null;
         }
 
@@ -261,31 +297,29 @@ public class Player : MonoBehaviour {
 
     }
 
-    public void WAttack_StartColl() // 두번째 약공 다시 켜주기
+    public void WAttack_StartColl() // 두번째 공격 콜라이더 다시 켜주기
     {
         coll.enabled = true;
     }
 
-    IEnumerator Co_WAttack()
+    IEnumerator Co_WAttack() // 첫번째 공격
     {
-
         rigid.velocity = Vector2.zero;
         AttackCheck = true;
         animator.SetBool("WAttack01", true);
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.3f);
         NextAttackCheck = false;
         animator.SetBool("WAttack01", false);
         AttackCheck = false;
         coll.enabled = false;
     }
 
-    IEnumerator Co_WAttack02()
+    IEnumerator Co_WAttack02() // 두번째 공격
     {
-
         rigid.velocity = Vector2.zero;
         AttackCheck = true;
         animator.SetBool("WAttack02", true);
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.3f);
         animator.SetBool("WAttack02", false);
         AttackCheck = false;
         NextAttackCheck = false;
@@ -311,6 +345,8 @@ public class Player : MonoBehaviour {
             rigid.velocity = Vector2.zero;
             animator.SetBool("SAttacking", true);
             coll.enabled = true;
+            PlayerSource.clip = SAttack_S;
+            PlayerSource.Play();
         }
     }
 
@@ -331,6 +367,12 @@ public class Player : MonoBehaviour {
         }
     }
 
+    public void StandPlayer()
+    {
+        UnHitCheck = false;
+        animator.SetBool("HitCheck", false);
+    }
+
     void Angel_move(Vector3 velocity) //밀어주기
     {
         GetComponent<Rigidbody2D>().velocity = velocity;
@@ -343,14 +385,15 @@ public class Player : MonoBehaviour {
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        
-        if (other.gameObject.tag == "Stone" && !UnHitCheck && !RollingCheck)
+        if(other.gameObject.tag == "Check")
+        {
+            CheckPoint = true;
+        }
+        if (other.gameObject.tag == "Stone" && !UnHitCheck && !RollingCheck && !GuardCheck)
         {
             Vector2 hitvec = Vector2.zero;
             if (!GuardCheck)
             {
-                HitRandNum = Random.Range(1, 3);
-                animator.SetInteger("HitNum", HitRandNum);
                 animator.SetBool("HitCheck", true);
                 hitvec = new Vector2(-4f, 7f);
                 CurrentHp = 10;
@@ -369,26 +412,31 @@ public class Player : MonoBehaviour {
             }
         }
 
-        if(other.gameObject.tag=="Boss" && boss.RushCheck && !RollingCheck && !UnHitCheck)
+        if(other.gameObject.tag=="Boss" && boss.RushCheck && !RollingCheck && !UnHitCheck && !GuardCheck)
         {
+            rigid.velocity = Vector2.zero;
             if (transform.position.x > BossPos.transform.position.x)
             {
+                transform.localScale = new Vector3(-0.8f, 0.8f, 1);
                 animator.SetBool("HitCheck", true);
                 RushHit = true;
-                VectorAdd(new Vector2(120f, 60f));
+                VectorAdd(new Vector2(15f,10f));
                 HitCheck = true;
                 Invoke("ReHit", 0.5f);
-                StartCoroutine(NoHitTime());
+                UnHitCheck = true;
+                Shadow.enabled = false;
             }
 
             else
             {
+                transform.localScale = new Vector3(0.8f, 0.8f, 1);
                 animator.SetBool("HitCheck", true);
                 RushHit = true;
-                VectorAdd(new Vector2(-120f, 60f));
+                VectorAdd(new Vector2(-15f, 10f));
                 HitCheck = true;
                 Invoke("ReHit", 0.5f);
-                StartCoroutine(NoHitTime());
+                UnHitCheck = true;
+                Shadow.enabled = false;
             }
         }
 
@@ -399,9 +447,10 @@ public class Player : MonoBehaviour {
             animator.SetBool("Jumping", false);
             Shadow.enabled = true;
 
-            if(RushHit)
+            if (RushHit)
             {
-                DeathCheck();
+               Invoke("DeathCheck", 0.8f);
+               Shadow.enabled = true;
             }
         }
 
@@ -410,8 +459,9 @@ public class Player : MonoBehaviour {
             Vector2 hitvec2 = Vector2.zero;
             if(!GuardCheck)
             {
+                rigid.velocity = Vector2.zero;
                 animator.SetBool("HitCheck", true);
-                hitvec2 = new Vector2(-7f, 7f);
+                hitvec2 = new Vector2(-5f, 5f);
                 CurrentHp = 10;
                 StartCoroutine(Slow_HP());
                 HitCheck = true;
@@ -434,8 +484,9 @@ public class Player : MonoBehaviour {
 
             if (!GuardCheck)
             {
+                rigid.velocity = Vector2.zero;
                 animator.SetBool("HitCheck", true);
-                hitvec3 = new Vector2(-4f, 7f);
+                hitvec3 = new Vector2(-5f, 5f);
                 CurrentHp = 20;
                 StartCoroutine(Slow_HP());
                 HitCheck = true;
@@ -458,7 +509,6 @@ public class Player : MonoBehaviour {
         if (other.gameObject.tag == "Boss") 
         {
             JumpCharsh = true;
-            //rigid.velocity = Vector2.zero;
         }
     }
 
@@ -502,7 +552,7 @@ public class Player : MonoBehaviour {
         if (other.gameObject.tag == "Boss") // 착지 체크
         {
             JumpCharsh = false;
-            //rigid.velocity = Vector2.zero;
+           // rigid.velocity = Vector2.zero;
         }
     }
 

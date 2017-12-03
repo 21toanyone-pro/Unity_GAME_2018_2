@@ -83,9 +83,13 @@
     <Compile Include="Assets\Script\Boss.cs" />
     <Compile Include="Assets\Script\Camera_Con.cs" />
     <Compile Include="Assets\Script\Camera_Shake.cs" />
+    <Compile Include="Assets\Script\Camera_zoom.cs" />
     <Compile Include="Assets\Script\CameraFollow.cs" />
     <Compile Include="Assets\Script\CameraMove.cs" />
+    <Compile Include="Assets\Script\CollDestroy.cs" />
     <Compile Include="Assets\Script\Effect.cs" />
+    <Compile Include="Assets\Script\FogMove.cs" />
+    <Compile Include="Assets\Script\Loding.cs" />
     <Compile Include="Assets\Script\MiniBoss.cs" />
     <Compile Include="Assets\Script\MotionBlur.cs" />
     <Compile Include="Assets\Script\Player.cs" />
