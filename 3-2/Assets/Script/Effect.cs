@@ -18,4 +18,9 @@ public class Effect : MonoBehaviour {
     {
         Destroy(gameObject);
     }
+
+    void Uprising_Dest()
+    {
+        Destroy(gameObject, 0.5f);
+    }
 }

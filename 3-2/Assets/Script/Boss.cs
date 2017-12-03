@@ -7,6 +7,7 @@ using Spine;
 [RequireComponent(typeof(AudioSource))]
 public class Boss : MonoBehaviour {
 
+    
     public GameObject PlayerPos;
     public GameObject groundStinger; //땅에서 나오는 가시
     public GameObject gorundStingerR; 
@@ -17,17 +18,24 @@ public class Boss : MonoBehaviour {
     public GameObject[] BabyPos = new GameObject[5];
     public GameObject[] BloodPos = new GameObject[2];
     public GameObject Blood_effect;
+    public GameObject Uprising_Effect; // 올라오는 이팩트
+
+    public SpriteRenderer Shadow_Effect; // 그림자
 
     /// <summary>
     /// 오디오
     /// </summary>
-    AudioSource ShoutSource;
-    public AudioSource HitSource;
-    public AudioClip Shout;
+    public AudioSource D_Source;
+    public AudioSource H_Source;
+    public AudioClip Shout; // 1페이즈 가시패턴
+    public AudioClip Shout02; // 2페이즈 가시패턴
     public AudioClip UprisingSound;
     public AudioClip Burrow;
     public AudioClip Rush;
     public AudioClip HitSound;
+    public AudioClip Intro;
+    public AudioClip Intro2;
+    public AudioClip Intro3;
 
 
     SkeletonAnimator skeleton;
@@ -71,7 +79,7 @@ public class Boss : MonoBehaviour {
         skeleton = GetComponent<SkeletonAnimator>();
         rigid = GetComponent<Rigidbody2D>();
         CShacke.enabled = false;
-        ShoutSource = GetComponent<AudioSource>(); // 기본 오디오
+   
     }
 
     IEnumerator FSM()
@@ -81,10 +89,13 @@ public class Boss : MonoBehaviour {
             switch (bossstate)
             {
                 case BOSSSTATE.SLEEP:
-                    if(SleepOn)
+
+                  
+                    if (SleepOn)
                     {
                         bossstate = BOSSSTATE.IDLE;
                     }
+
                     break;
 
                 case BOSSSTATE.IDLE:
@@ -104,10 +115,16 @@ public class Boss : MonoBehaviour {
                     if (paseCheck == 1)
                     {
                         StartCoroutine(Uprising(PlayerPos.transform.position));
+                        D_Source.Stop();
+                        D_Source.clip = Burrow;
+                        D_Source.Play();
                     }
                     else if(paseCheck ==2)
                     {
                         StartCoroutine(Uprising(PlayerPos.transform.position));
+                        D_Source.Stop();
+                        D_Source.clip = Burrow;
+                        D_Source.Play();
                     }
                     bossstate = BOSSSTATE.WAIT;
                     break;
@@ -115,27 +132,21 @@ public class Boss : MonoBehaviour {
                 case BOSSSTATE.RUSH: // 덮치기 (플레이어가 있는 방향으로 빠르게 이동)
                     if(paseCheck == 1)
                     {
-                        ShoutSource.clip = Rush;
-                        ShoutSource.Play();
-                        
+                        D_Source.clip = Rush;
+                        D_Source.Play();
                         StartCoroutine(Rush_P());
-                        RushCheck = true;
-                        RushColl.enabled = true;
                     }
                     
                     else if(paseCheck ==2)
                     {
-
+                        D_Source.clip = Rush;
+                        D_Source.Play();
                         StartCoroutine(Rush_Pase2());
-                        RushCheck = true;
-                        RushColl.enabled = true;
                     }
                     bossstate = BOSSSTATE.WAIT;
                     break;
 
                 case BOSSSTATE.SHOUT: // 포효1 (플레이어가 서있는 위치에 0.8초마다 가시가 솟아오름)
-                    ShoutSource.clip = Shout;
-                    ShoutSource.Play();
                     ani.SetBool("Shoting", true);
                     StingerNum = 0;
                     bossstate = BOSSSTATE.WAIT;
@@ -146,12 +157,14 @@ public class Boss : MonoBehaviour {
                 case BOSSSTATE.WAIT:
                     break;
                 case BOSSSTATE.PAGE03:
+                    D_Source.clip = Intro3;
+                    D_Source.Play();
                     StartCoroutine(Pasge03_boss());
                     ani.SetTrigger("PageChange03");
                     bossstate = BOSSSTATE.WAIT;
                     break;
 
-                case BOSSSTATE.PAGE02:
+                case BOSSSTATE.PAGE02: //페이즈2
                     Invoke("Page2end", 1.5f);
                     bossstate = BOSSSTATE.WAIT;
                     break;
@@ -230,10 +243,14 @@ public class Boss : MonoBehaviour {
         Vector3 StingerPos = new Vector3(PlayerPos.transform.position.x, -5.777819f, PlayerPos.transform.position.z);
         if(paseCheck ==1)
         {
+            D_Source.clip = Shout;
+            D_Source.Play();
             StartCoroutine(Shout_Stinger(StingerPos));
         }
         else if(paseCheck ==2)
         {
+            D_Source.clip = Shout02;
+            D_Source.Play();
             StartCoroutine(WorldStinger());
         }
     }
@@ -285,7 +302,7 @@ public class Boss : MonoBehaviour {
             Instantiate(gorundStingerR, pos, Quaternion.identity);
         }
 
-        else if (PlayerPos.transform.position.x < transform.position.x) //요기요
+        else if (PlayerPos.transform.position.x < transform.position.x)
         {
             Instantiate(groundStinger, pos, Quaternion.identity);
         }
@@ -435,19 +452,21 @@ public class Boss : MonoBehaviour {
     {
         Vector3 RushVec = Vector3.zero;
         Vector3 playerPos = player.transform.position;
+        ani.SetBool("Rushing", true);
+        yield return new WaitForSeconds(1.5f);
+        RushColl.enabled = true;
+        RushCheck = true;
+
         var t = 0f;
         do
         {
             if (HozCheck)
             {
-                ani.SetBool("Rushing", true);
                 RushVec = Vector3.left;
                 transform.localScale = new Vector3(1.2f, 1.2f, 1.2f);
-
             }
             else if (!HozCheck)
             {
-                ani.SetBool("Rushing", true);
                 RushVec = Vector3.right;
                 transform.localScale = new Vector3(-1.2f, 1.2f, 1.2f);
             }
@@ -479,19 +498,19 @@ public class Boss : MonoBehaviour {
     {
         Vector3 RushVec = Vector3.zero;
         Vector3 playerPos = player.transform.position;
- 
+        ani.SetBool("Rushing", true);
+        yield return new WaitForSeconds(1.5f);
+        RushColl.enabled = true;
+        RushCheck = true;
         do
         {
             if (HozCheck)
             {
-                
-                ani.SetBool("Rushing", true);
                 RushVec = Vector3.left;
                 transform.localScale = new Vector3(1.2f, 1.2f, 1.2f);
             }
             else if (!HozCheck)
             {
-                ani.SetBool("Rushing", true);
                 RushVec = Vector3.right;
                 transform.localScale = new Vector3(-1.2f, 1.2f, 1.2f);
             }
@@ -513,10 +532,16 @@ public class Boss : MonoBehaviour {
     IEnumerator Uprising(Vector3 End) // 들어갔다 나오기
     {
         ani.SetBool("Digging", true);
+        Shadow_Effect.enabled = false;
         yield return new WaitForSeconds(2f);
+        Instantiate(Uprising_Effect, new Vector3(End.x, -6.03335f, End.z), Quaternion.identity);
+        yield return new WaitForSeconds(0.2f);
         transform.position = new Vector3(End.x, transform.position.y + 20, transform.position.z);
+        D_Source.clip = UprisingSound;
+        D_Source.Play();
         ani.SetBool("Digging", false);
         yield return new WaitForSeconds(0.5f);
+        Shadow_Effect.enabled = true;
         bossstate = BOSSSTATE.IDLE;
     }
 
@@ -564,6 +589,8 @@ public class Boss : MonoBehaviour {
         {
             if (paseCheck == 1)
             {
+                D_Source.clip = Intro2;
+                D_Source.Play();
                 bossstate = BOSSSTATE.PAGE02;
             }
             ani.SetTrigger("PageChange02");
@@ -607,7 +634,7 @@ public class Boss : MonoBehaviour {
             StartCoroutine(HitEffect());
             Boss_HP -= player.AttackDamage;
             StartCoroutine(Hit_Image());
-            HitSource.Play();
+            H_Source.Play();
         }
     }
 

@@ -8,6 +8,9 @@ using Spine;
 public class Player : MonoBehaviour {
 
     Animator animator;
+
+    public Animator Dust; // 먼지 이펙트
+
     Rigidbody2D rigid;
     public Collider2D coll;
     public GameObject BossPos;
@@ -40,6 +43,7 @@ public class Player : MonoBehaviour {
     bool JumpCheck; // 이중점프 체크
     bool JumpCharsh; // 점프중 부딫힘
     bool AttackCheck; //공격중 체크
+    bool StrongCheck; //강한 공격 체크
     bool NextAttackCheck; // 다음 공격 켜져있나
     bool GuardCheck; // 땅이 닿았는지 체크
     bool HitCheck; // 맞았는지 체크
@@ -72,6 +76,12 @@ public class Player : MonoBehaviour {
         if ((Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow)) && !JumpCheck)
         {
             PlayerSource.PlayOneShot(Move_S);
+            Dust.enabled = true;
+        }
+
+        else
+        {
+            Dust.enabled = false;
         }
     }
 
@@ -106,7 +116,7 @@ public class Player : MonoBehaviour {
             Rolling(); // 구르기
         }
 
-        if (Input.GetKeyDown(KeyCode.S) && PlayerST >= 10 && !HitCheck && !UnHitCheck)
+        if (Input.GetKeyDown(KeyCode.S) && PlayerST >= 10 && !HitCheck && !UnHitCheck && !StrongCheck)
         {
             if (!NextAttackCheck) // 만약 어택 다음 공격  체크가 안되있으면
             {
@@ -252,7 +262,7 @@ public class Player : MonoBehaviour {
     void Rolling() //구르기 
     {
         var Start = transform.position;
-        if (Input.GetKeyDown(KeyCode.LeftShift) && !RollingCheck && PlayerST >= 25 && !UnHitCheck) // 구르기 체크
+        if (Input.GetKeyDown(KeyCode.LeftShift) && !RollingCheck && PlayerST >= 25 && !UnHitCheck && !AttackCheck) // 구르기 체크
         {
             animator.SetBool("Rolling", true);
             StartCoroutine(RollingState());
@@ -331,17 +341,19 @@ public class Player : MonoBehaviour {
         animator.SetBool("SAttacking", false);
         coll.enabled = false;
         AttackCheck = false;
+        StrongCheck = false;
     }
 
     public void StrongAttack() // 강공격
     {
-        if(Input.GetKeyDown(KeyCode.D) && PlayerST >= 5)
+        if(Input.GetKeyDown(KeyCode.D) && PlayerST >= 5 && !AttackCheck && !StrongCheck)
         {
             AttackDamage = 36;
             CurrentST = 20;
             StartCoroutine(Slow_ST());
             Stamina_Time = 0;
             AttackCheck = true;
+            StrongCheck = true;
             rigid.velocity = Vector2.zero;
             animator.SetBool("SAttacking", true);
             coll.enabled = true;
@@ -389,19 +401,28 @@ public class Player : MonoBehaviour {
         {
             CheckPoint = true;
         }
+
         if (other.gameObject.tag == "Stone" && !UnHitCheck && !RollingCheck && !GuardCheck)
         {
             Vector2 hitvec = Vector2.zero;
             if (!GuardCheck)
             {
                 animator.SetBool("HitCheck", true);
-                hitvec = new Vector2(-4f, 7f);
+                
                 CurrentHp = 10;
                 StartCoroutine(Slow_HP());
-                
                 HitCheck = true;
                 Invoke("ReHit", 0.5f);
                 StartCoroutine(NoHitTime());
+                if(LR_Check == 0) // 왼쪽이면
+                {
+                    hitvec = new Vector2(4f, 7f);
+                }
+
+                else if (LR_Check == 1) // 왼쪽이면
+                {
+                    hitvec = new Vector2(-4f, 7f);
+                }
             }
 
             else
@@ -409,12 +430,22 @@ public class Player : MonoBehaviour {
                 CurrentST = 10;
                 StartCoroutine(Slow_ST());
                 Stamina_Time = 0;
+                if (LR_Check == 0) // 왼쪽이면
+                {
+                    hitvec = new Vector2(2f, 5f);
+                }
+
+                else if (LR_Check == 1) // 왼쪽이면
+                {
+                    hitvec = new Vector2(-2f, 5f);
+                }
             }
         }
 
         if(other.gameObject.tag=="Boss" && boss.RushCheck && !RollingCheck && !UnHitCheck && !GuardCheck)
         {
             rigid.velocity = Vector2.zero;
+            SAttackCheck();
             if (transform.position.x > BossPos.transform.position.x)
             {
                 transform.localScale = new Vector3(-0.8f, 0.8f, 1);
@@ -461,19 +492,38 @@ public class Player : MonoBehaviour {
             {
                 rigid.velocity = Vector2.zero;
                 animator.SetBool("HitCheck", true);
-                hitvec2 = new Vector2(-5f, 5f);
                 CurrentHp = 10;
                 StartCoroutine(Slow_HP());
                 HitCheck = true;
                 Invoke("ReHit", 0.5f);
                 StartCoroutine(NoHitTime());
+                if (LR_Check == 0) // 왼쪽이면
+                {
+                    hitvec2 = new Vector2(5f, 5f);
+                }
+
+                else if (LR_Check == 1) // 왼쪽이면
+                {
+                    hitvec2 = new Vector2(-5f, 5f);
+                }
             }
 
             else
             {
+                rigid.velocity = Vector2.zero;
                 CurrentST = 10;
                 StartCoroutine(Slow_ST());
                 Stamina_Time = 0;
+                if (LR_Check == 0) // 왼쪽이면
+                {
+                    hitvec2 = new Vector2(3f, 3f);
+                }
+
+                else if (LR_Check == 1) // 왼쪽이면
+                {
+                    hitvec2 = new Vector2(-3f, 3f);
+                }
+
             }
             rigid.AddForce(hitvec2, ForceMode2D.Impulse);
         }
@@ -486,12 +536,20 @@ public class Player : MonoBehaviour {
             {
                 rigid.velocity = Vector2.zero;
                 animator.SetBool("HitCheck", true);
-                hitvec3 = new Vector2(-5f, 5f);
                 CurrentHp = 20;
                 StartCoroutine(Slow_HP());
                 HitCheck = true;
                 Invoke("ReHit", 0.5f);
                 StartCoroutine(NoHitTime());
+                if (LR_Check == 0) // 왼쪽이면
+                {
+                    hitvec3 = new Vector2(5f, 5f);
+                }
+
+                else if (LR_Check == 1) // 왼쪽이면
+                {
+                    hitvec3 = new Vector2(-5f, 5f);
+                }
             }
 
             else
@@ -499,6 +557,15 @@ public class Player : MonoBehaviour {
                 CurrentST = 10;
                 StartCoroutine(Slow_ST());
                 Stamina_Time = 0;
+                if (LR_Check == 0) // 왼쪽이면
+                {
+                    hitvec3 = new Vector2(2f, 3f);
+                }
+
+                else if (LR_Check == 1) // 왼쪽이면
+                {
+                    hitvec3 = new Vector2(-2f, 3f);
+                }
             }
             rigid.AddForce(hitvec3, ForceMode2D.Impulse);
         }

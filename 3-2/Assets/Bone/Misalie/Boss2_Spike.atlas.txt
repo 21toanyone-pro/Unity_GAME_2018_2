@@ -1,19 +1,75 @@
 
 Boss2_Spike.png
-size: 476,186
+size: 833,504
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
+1
+  rotate: false
+  xy: 2, 13
+  size: 27, 23
+  orig: 27, 23
+  offset: 0, 0
+  index: -1
+2
+  rotate: false
+  xy: 52, 18
+  size: 17, 18
+  orig: 17, 18
+  offset: 0, 0
+  index: -1
+3
+  rotate: false
+  xy: 31, 14
+  size: 19, 22
+  orig: 19, 22
+  offset: 0, 0
+  index: -1
+4
+  rotate: false
+  xy: 476, 181
+  size: 11, 18
+  orig: 11, 18
+  offset: 0, 0
+  index: -1
+5
+  rotate: true
+  xy: 31, 2
+  size: 10, 11
+  orig: 10, 11
+  offset: 0, 0
+  index: -1
+L1
+  rotate: false
+  xy: 490, 257
+  size: 341, 245
+  orig: 341, 245
+  offset: 0, 0
+  index: -1
+M1
+  rotate: false
+  xy: 2, 201
+  size: 486, 301
+  orig: 486, 301
+  offset: 0, 0
+  index: -1
+R1
+  rotate: false
+  xy: 490, 10
+  size: 341, 245
+  orig: 341, 245
+  offset: 0, 0
+  index: -1
 Shadow
   rotate: true
-  xy: 386, 2
+  xy: 386, 17
   size: 182, 88
   orig: 182, 88
   offset: 0, 0
   index: -1
 horn
   rotate: true
-  xy: 2, 23
+  xy: 2, 38
   size: 161, 382
   orig: 161, 382
   offset: 0, 0

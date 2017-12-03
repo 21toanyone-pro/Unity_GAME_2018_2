@@ -81,6 +81,7 @@
     <Compile Include="Assets\Destroy.cs" />
     <Compile Include="Assets\IdleState.cs" />
     <Compile Include="Assets\Script\Boss.cs" />
+    <Compile Include="Assets\Script\Boss_HP.cs" />
     <Compile Include="Assets\Script\Camera_Con.cs" />
     <Compile Include="Assets\Script\Camera_Shake.cs" />
     <Compile Include="Assets\Script\Camera_zoom.cs" />
@@ -183,6 +184,8 @@
     <None Include="Assets\Bone\Block.atlas.txt" />
     <None Include="Assets\Bone\Boss2.atlas.txt" />
     <None Include="Assets\Bone\Character.atlas.txt" />
+    <None Include="Assets\Bone\Effect\Dust.atlas.txt" />
+    <None Include="Assets\Bone\Effect\Uprsiing effect.atlas.txt" />
     <None Include="Assets\Bone\Mini_boss\Boss2.atlas.txt" />
     <None Include="Assets\Bone\Mini_boss\skeleton.atlas.txt" />
     <None Include="Assets\Bone\Misalie\Boss2_Missile.atlas.txt" />

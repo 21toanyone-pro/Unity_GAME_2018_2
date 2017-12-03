@@ -1,0 +1,41 @@
+
+Uprsiing effect.png
+size: 881,89
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+1P
+  rotate: false
+  xy: 421, 13
+  size: 54, 16
+  orig: 54, 16
+  offset: 0, 0
+  index: -1
+2P
+  rotate: false
+  xy: 660, 17
+  size: 212, 34
+  orig: 212, 34
+  offset: 0, 0
+  index: -1
+3P
+  rotate: false
+  xy: 660, 53
+  size: 219, 34
+  orig: 219, 34
+  offset: 0, 0
+  index: -1
+4P
+  rotate: false
+  xy: 421, 31
+  size: 237, 56
+  orig: 237, 56
+  offset: 0, 0
+  index: -1
+5P
+  rotate: false
+  xy: 2, 2
+  size: 417, 85
+  orig: 417, 85
+  offset: 0, 0
+  index: -1

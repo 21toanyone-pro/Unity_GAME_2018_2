@@ -1,0 +1,13 @@
+
+Dust.png
+size: 292,183
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+dust
+  rotate: false
+  xy: 2, 2
+  size: 288, 179
+  orig: 288, 179
+  offset: 0, 0
+  index: -1

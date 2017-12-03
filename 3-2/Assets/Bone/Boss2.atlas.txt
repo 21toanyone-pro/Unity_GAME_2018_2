@@ -250,125 +250,132 @@ RRarm1_1
   index: -1
 
 Boss23.png
-size: 1009,695
+size: 1005,715
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
 2Head 2
   rotate: false
-  xy: 367, 357
+  xy: 2, 7
   size: 363, 336
   orig: 363, 336
   offset: 0, 0
   index: -1
 2Head 3
   rotate: false
-  xy: 2, 325
+  xy: 2, 345
   size: 363, 368
   orig: 363, 368
   offset: 0, 0
   index: -1
 2_2
   rotate: true
-  xy: 905, 17
+  xy: 507, 4
   size: 48, 74
   orig: 48, 74
   offset: 0, 0
   index: -1
 3_3
-  rotate: false
-  xy: 856, 15
+  rotate: true
+  xy: 583, 2
   size: 47, 91
   orig: 47, 91
   offset: 0, 0
   index: -1
 4_2
-  rotate: false
-  xy: 961, 103
+  rotate: true
+  xy: 676, 5
   size: 44, 43
   orig: 44, 43
   offset: 0, 0
   index: -1
 4_3
   rotate: true
-  xy: 597, 16
+  xy: 367, 3
   size: 49, 138
   orig: 49, 138
   offset: 0, 0
   index: -1
 Head_3P
   rotate: false
-  xy: 2, 10
+  xy: 367, 400
   size: 363, 313
   orig: 363, 313
   offset: 0, 0
   index: -1
+Headmask
+  rotate: true
+  xy: 727, 115
+  size: 101, 125
+  orig: 101, 125
+  offset: 0, 0
+  index: -1
 LBlock
-  rotate: false
-  xy: 732, 254
+  rotate: true
+  xy: 727, 218
   size: 180, 128
   orig: 180, 128
   offset: 0, 0
   index: -1
 LBody1
   rotate: false
-  xy: 367, 11
+  xy: 367, 54
   size: 228, 344
   orig: 228, 344
   offset: 0, 0
   index: -1
 LLarm1_1
   rotate: false
-  xy: 732, 468
+  xy: 732, 488
   size: 271, 225
   orig: 271, 225
   offset: 0, 0
   index: -1
 Parts1
-  rotate: false
-  xy: 914, 261
+  rotate: true
+  xy: 597, 51
   size: 57, 121
   orig: 57, 121
   offset: 0, 0
   index: -1
 R3_2
   rotate: true
-  xy: 898, 148
+  xy: 854, 21
   size: 104, 109
   orig: 104, 109
   offset: 0, 0
   index: -1
 R4_1
-  rotate: false
-  xy: 905, 67
+  rotate: true
+  xy: 727, 59
   size: 54, 79
   orig: 54, 79
   offset: 0, 0
   index: -1
 R4_2
   rotate: true
-  xy: 737, 2
+  xy: 857, 127
   size: 104, 117
   orig: 104, 117
   offset: 0, 0
   index: -1
 RRarm1_2
   rotate: false
-  xy: 597, 67
+  xy: 597, 110
   size: 128, 288
   orig: 128, 288
   offset: 0, 0
   index: -1
 RRarm2
   rotate: false
-  xy: 732, 384
+  xy: 732, 404
   size: 255, 82
   orig: 255, 82
   offset: 0, 0
   index: -1
 Rarm
-  rotate: false
-  xy: 727, 108
+  rotate: true
+  xy: 857, 233
   size: 169, 144
   orig: 169, 144
   offset: 0, 0
