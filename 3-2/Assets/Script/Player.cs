@@ -104,19 +104,19 @@ public class Player : MonoBehaviour {
 
         if(!RollingCheck && !HitCheck) //구르는 중이 아니면 움직임 
         {
-            if (!AttackCheck && !HitCheck && !UnHitCheck)
+            if (!AttackCheck && !HitCheck && !UnHitCheck && !GuardCheck)
             {
                 Moving();
             }
             StrongAttack();
         }
 
-        if (!JumpCheck && !AttackCheck && !HitCheck && !UnHitCheck)
+        if (!JumpCheck && !AttackCheck && !HitCheck && !UnHitCheck && !GuardCheck)
         {
             Rolling(); // 구르기
         }
 
-        if (Input.GetKeyDown(KeyCode.S) && PlayerST >= 10 && !HitCheck && !UnHitCheck && !StrongCheck)
+        if (Input.GetKeyDown(KeyCode.S) && PlayerST >= 10 && !HitCheck && !UnHitCheck && !StrongCheck && !GuardCheck)
         {
             if (!NextAttackCheck) // 만약 어택 다음 공격  체크가 안되있으면
             {
@@ -143,7 +143,7 @@ public class Player : MonoBehaviour {
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) && !JumpCheck && PlayerST >= 5 && !HitCheck && !UnHitCheck) //점프 버튼 
+        if (Input.GetKeyDown(KeyCode.Space) && !JumpCheck && PlayerST >= 5 && !HitCheck && !UnHitCheck && !GuardCheck) //점프 버튼 
         {
             PlayerSource.clip = Jump_S;
             PlayerSource.Play();

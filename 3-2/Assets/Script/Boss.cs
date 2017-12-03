@@ -19,6 +19,8 @@ public class Boss : MonoBehaviour {
     public GameObject[] BloodPos = new GameObject[2];
     public GameObject Blood_effect;
     public GameObject Uprising_Effect; // 올라오는 이팩트
+    public GameObject Crack;
+
 
     public SpriteRenderer Shadow_Effect; // 그림자
 
@@ -90,7 +92,6 @@ public class Boss : MonoBehaviour {
             {
                 case BOSSSTATE.SLEEP:
 
-                  
                     if (SleepOn)
                     {
                         bossstate = BOSSSTATE.IDLE;
@@ -148,6 +149,16 @@ public class Boss : MonoBehaviour {
 
                 case BOSSSTATE.SHOUT: // 포효1 (플레이어가 서있는 위치에 0.8초마다 가시가 솟아오름)
                     ani.SetBool("Shoting", true);
+                    if (paseCheck == 1)
+                    {
+                        D_Source.clip = Shout;
+                        D_Source.Play();
+                    }
+                    else if (paseCheck == 2)
+                    {
+                        D_Source.clip = Shout02;
+                        D_Source.Play();
+                    }
                     StingerNum = 0;
                     bossstate = BOSSSTATE.WAIT;
                     break;
@@ -243,8 +254,6 @@ public class Boss : MonoBehaviour {
         Vector3 StingerPos = new Vector3(PlayerPos.transform.position.x, -5.777819f, PlayerPos.transform.position.z);
         if(paseCheck ==1)
         {
-            D_Source.clip = Shout;
-            D_Source.Play();
             StartCoroutine(Shout_Stinger(StingerPos));
         }
         else if(paseCheck ==2)
@@ -448,6 +457,16 @@ public class Boss : MonoBehaviour {
         yield return null;
 
     }
+    IEnumerator Crack_Spwan(Vector3 Spwan)
+    {
+        if (RushCheck)
+        { 
+            Instantiate(Crack, new Vector3(Spwan.x, -5.99f, Spwan.z), Quaternion.identity);
+            yield return new WaitForSeconds(0.3f);
+            StartCoroutine(Crack_Spwan(new Vector3(transform.position.x, -5.99f, transform.position.z)));
+        }
+        yield return null;
+    }
     IEnumerator Rush_P() //덮치기
     {
         Vector3 RushVec = Vector3.zero;
@@ -456,7 +475,7 @@ public class Boss : MonoBehaviour {
         yield return new WaitForSeconds(1.5f);
         RushColl.enabled = true;
         RushCheck = true;
-
+        StartCoroutine(Crack_Spwan(new Vector3(transform.position.x, -5.99f, transform.position.z)));
         var t = 0f;
         do
         {
@@ -502,6 +521,7 @@ public class Boss : MonoBehaviour {
         yield return new WaitForSeconds(1.5f);
         RushColl.enabled = true;
         RushCheck = true;
+        float Spead = 10;
         do
         {
             if (HozCheck)
@@ -514,8 +534,8 @@ public class Boss : MonoBehaviour {
                 RushVec = Vector3.right;
                 transform.localScale = new Vector3(-1.2f, 1.2f, 1.2f);
             }
-            transform.position += RushVec * 10 * Time.deltaTime;
-            
+            transform.position += RushVec * Spead * Time.deltaTime;
+            Spead += 1f;
             yield return null;
         } while (!WallCheck);
 

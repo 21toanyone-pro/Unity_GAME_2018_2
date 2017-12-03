@@ -41,6 +41,8 @@ namespace Spine.Unity.Modules {
 		const HideFlags GhostHideFlags = HideFlags.HideInHierarchy;
 		const string GhostingShaderName = "Spine/Special/SkeletonGhost";
 
+        Boss boss;
+
 		public bool ghostingEnabled = true;
 		public float spawnRate = 0.05f;
 		public Color32 color = new Color32(0xFF, 0xFF, 0xFF, 0x00); // default for additive.
@@ -69,6 +71,8 @@ namespace Spine.Unity.Modules {
 		void Start () {
 			if (ghostShader == null)
 				ghostShader = Shader.Find(GhostingShaderName);
+
+            boss = GameObject.Find("Boss").GetComponent<Boss>();
 
 			skeletonRenderer = GetComponent<SkeletonRenderer>();
 			meshFilter = GetComponent<MeshFilter>();
@@ -110,47 +114,58 @@ namespace Spine.Unity.Modules {
 		}
 
 		void Update () {
-			if (!ghostingEnabled)
-				return;
 
-			if (Time.time >= nextSpawnTime) {
-				GameObject go = pool[poolIndex].gameObject;
+            if(boss.RushCheck)
+            {
+                if (!ghostingEnabled)
+                    return;
 
-				Material[] materials = meshRenderer.sharedMaterials;
-				for (int i = 0; i < materials.Length; i++) {
-					var originalMat = materials[i];
-					Material ghostMat;
-					if (!materialTable.ContainsKey(originalMat)) {
-						ghostMat = new Material(originalMat);
-						ghostMat.shader = ghostShader;
-						ghostMat.color = Color.white;
-						if (ghostMat.HasProperty("_TextureFade"))
-							ghostMat.SetFloat("_TextureFade", textureFade);
-						materialTable.Add(originalMat, ghostMat);
-					} else {
-						ghostMat = materialTable[originalMat];
-					}
+                if (Time.time >= nextSpawnTime)
+                {
+                    GameObject go = pool[poolIndex].gameObject;
 
-					materials[i] = ghostMat;
-				}
+                    Material[] materials = meshRenderer.sharedMaterials;
+                    for (int i = 0; i < materials.Length; i++)
+                    {
+                        var originalMat = materials[i];
+                        Material ghostMat;
+                        if (!materialTable.ContainsKey(originalMat))
+                        {
+                            ghostMat = new Material(originalMat);
+                            ghostMat.shader = ghostShader;
+                            ghostMat.color = Color.white;
+                            if (ghostMat.HasProperty("_TextureFade"))
+                                ghostMat.SetFloat("_TextureFade", textureFade);
+                            materialTable.Add(originalMat, ghostMat);
+                        }
+                        else
+                        {
+                            ghostMat = materialTable[originalMat];
+                        }
 
-				var goTransform = go.transform;
-				goTransform.parent = transform;
+                        materials[i] = ghostMat;
+                    }
 
-				pool[poolIndex].Initialize(meshFilter.sharedMesh, materials, color, additive, fadeSpeed, meshRenderer.sortingLayerID, (sortWithDistanceOnly) ? meshRenderer.sortingOrder : meshRenderer.sortingOrder - 1);
+                    var goTransform = go.transform;
+                    goTransform.parent = transform;
 
-				goTransform.localPosition = new Vector3(0f, 0f, zOffset);
-				goTransform.localRotation = Quaternion.identity;
-				goTransform.localScale = Vector3.one;
+                    pool[poolIndex].Initialize(meshFilter.sharedMesh, materials, color, additive, fadeSpeed, meshRenderer.sortingLayerID, (sortWithDistanceOnly) ? meshRenderer.sortingOrder : meshRenderer.sortingOrder - 1);
 
-				goTransform.parent = null;
+                    goTransform.localPosition = new Vector3(0f, 0f, zOffset);
+                    goTransform.localRotation = Quaternion.identity;
+                    goTransform.localScale = Vector3.one;
 
-				poolIndex++;
+                    goTransform.parent = null;
 
-				if (poolIndex == pool.Length)
-					poolIndex = 0;
+                    poolIndex++;
 
-				nextSpawnTime = Time.time + spawnRate;
+                    if (poolIndex == pool.Length)
+                        poolIndex = 0;
+
+                    nextSpawnTime = Time.time + spawnRate;
+                }
+
+			
 			}
 		}
 

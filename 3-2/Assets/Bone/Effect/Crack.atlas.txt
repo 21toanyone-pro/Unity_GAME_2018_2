@@ -1,0 +1,13 @@
+
+Crack.png
+size: 1004,176
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Boss_rush effect
+  rotate: false
+  xy: 2, 2
+  size: 1000, 172
+  orig: 1000, 172
+  offset: 0, 0
+  index: -1
