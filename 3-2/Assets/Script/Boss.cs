@@ -14,6 +14,7 @@ public class Boss : MonoBehaviour {
     public GameObject World_Stinger;
     public GameObject Stones;
     public GameObject Baby; // 새끼들
+    public GameObject LastBaby;
     public GameObject[] StoneDrop = new GameObject[6];
     public GameObject[] StoneDrop02 = new GameObject[5];
     public GameObject[] BabyPos = new GameObject[5];
@@ -65,7 +66,7 @@ public class Boss : MonoBehaviour {
     bool Hit_effect;
     bool RushHitCheck; //맞았는지 안맞았는지
     bool Page02Check;
-    int paseCheck; // 1, 2, 3 = 페이즈 1,2,3
+    public int paseCheck; // 1, 2, 3 = 페이즈 1,2,3
 
     public enum BOSSSTATE { SLEEP, IDLE, UPRISING, RUSH, SHOUT, SHOUT2, WAIT, MOVE, DEATH, PAGE03, PAGE02,BABY }
     BOSSSTATE bossstate = BOSSSTATE.SLEEP;
@@ -340,12 +341,22 @@ public class Boss : MonoBehaviour {
         do
         {
             BabyNum = Random.Range(0, 5);
-            Instantiate(Baby, BabyPos[BabyNum].transform.position, Quaternion.identity);
-            Boss_HP -= 50;
-            yield return new WaitForSeconds(0.5f);
-            StartCoroutine(Drop_Stone());
+            if (Boss_HP <= 15)
+            {
+                if (transform.position.x > PlayerPos.transform.position.x)
+                { Instantiate(LastBaby, BabyPos[3].transform.position, Quaternion.identity); }
+                else if (transform.position.x < PlayerPos.transform.position.x)
+                { Instantiate(LastBaby, BabyPos[0].transform.position, Quaternion.identity); }
+                break;
+            }
+            else
+            {
+                Instantiate(Baby, BabyPos[BabyNum].transform.position, Quaternion.identity);
+            }
+            Boss_HP -= 15;
             yield return new WaitForSeconds(1f);
-            if (Boss_HP == 0) break;
+            StartCoroutine(Drop_Stone());
+            yield return new WaitForSeconds(0.5f);
         } while (true);
         
     }
@@ -356,7 +367,6 @@ public class Boss : MonoBehaviour {
         bool isSame;
         int randPos =0;
         randPos = Random.Range(0, 2);
-
         if (randPos == 0)
         {
             for (int i = 0; i < 6; i++)
@@ -437,7 +447,7 @@ public class Boss : MonoBehaviour {
         Vector3 StopPos = new Vector3(0f, transform.position.y, transform.position.z);
         do
         {
-            transform.position = Vector3.MoveTowards(transform.position, StopPos, Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, StopPos, Time.deltaTime*2f);
             if(transform.position == StopPos)
             {
                 StartCoroutine(Crying_Boss());
@@ -689,7 +699,6 @@ public class Boss : MonoBehaviour {
 
         if (other.gameObject.tag == "Attackcoll" && paseCheck !=3)
         {
-            StartCoroutine(HitEffect());
             Boss_HP -= player.AttackDamage;
             StartCoroutine(Hit_Image());
             H_Source.Play();
@@ -697,25 +706,7 @@ public class Boss : MonoBehaviour {
     }
 
 
-    IEnumerator HitEffect()
-    {
-        float Vec = 0f;
-        if (transform.position.x > PlayerPos.transform.position.x)
-        {
-            Vec = -60f;
-        }
-
-        if (transform.position.x < PlayerPos.transform.position.x)
-        {
-            Vec = 60f;
-        }
-        
-        GameObject blood = Instantiate(Blood_effect, BloodPos[1].transform.position, Quaternion.Euler(0, 0, Vec));
-        blood.transform.parent = this.transform;
-        yield return null;
-    }
-
-
+ 
 
     void StopShake()
     {

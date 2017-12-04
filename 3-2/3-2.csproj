@@ -80,6 +80,8 @@
   <ItemGroup>
     <Compile Include="Assets\Destroy.cs" />
     <Compile Include="Assets\IdleState.cs" />
+    <Compile Include="Assets\Script\BackGround_Manager.cs" />
+    <Compile Include="Assets\Script\BGMManager.cs" />
     <Compile Include="Assets\Script\Boss.cs" />
     <Compile Include="Assets\Script\Boss_HP.cs" />
     <Compile Include="Assets\Script\Camera_Con.cs" />
@@ -89,10 +91,14 @@
     <Compile Include="Assets\Script\CameraMove.cs" />
     <Compile Include="Assets\Script\CollDestroy.cs" />
     <Compile Include="Assets\Script\Effect.cs" />
+    <Compile Include="Assets\Script\FogColor.cs" />
+    <Compile Include="Assets\Script\FogManager.cs" />
     <Compile Include="Assets\Script\FogMove.cs" />
+    <Compile Include="Assets\Script\LastBoss.cs" />
     <Compile Include="Assets\Script\Loding.cs" />
     <Compile Include="Assets\Script\MiniBoss.cs" />
     <Compile Include="Assets\Script\MotionBlur.cs" />
+    <Compile Include="Assets\Script\Opening.cs" />
     <Compile Include="Assets\Script\Player.cs" />
     <Compile Include="Assets\Script\Player_State.cs" />
     <Compile Include="Assets\Script\Spike.cs" />
@@ -188,8 +194,7 @@
     <None Include="Assets\Bone\Effect\Crack.atlas.txt" />
     <None Include="Assets\Bone\Effect\Dust.atlas.txt" />
     <None Include="Assets\Bone\Effect\Uprsiing effect.atlas.txt" />
-    <None Include="Assets\Bone\Mini_boss\Boss2.atlas.txt" />
-    <None Include="Assets\Bone\Mini_boss\skeleton.atlas.txt" />
+    <None Include="Assets\Bone\Mini_boss\Boss_Young.atlas.txt" />
     <None Include="Assets\Bone\Misalie\Boss2_Missile.atlas.txt" />
     <None Include="Assets\Bone\Misalie\Boss2_Spike.atlas.txt" />
     <None Include="Assets\Spine\spine-unity\Editor\Resources\SpineAssetDatabaseMarker.txt" />

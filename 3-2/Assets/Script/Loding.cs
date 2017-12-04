@@ -37,7 +37,9 @@ public class Loding : MonoBehaviour {
                 profressBar.fillAmount = Mathf.Lerp(profressBar.fillAmount, 1f, timer);
 
                 if (profressBar.fillAmount == 1.0f)
+                {
                     oper.allowSceneActivation = true;
+                }
             }
 
             else

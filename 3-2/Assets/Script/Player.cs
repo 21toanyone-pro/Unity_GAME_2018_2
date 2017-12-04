@@ -432,12 +432,12 @@ public class Player : MonoBehaviour {
                 Stamina_Time = 0;
                 if (LR_Check == 0) // 왼쪽이면
                 {
-                    VectorAdd(new Vector2(3f, 3f));
+                    VectorAdd(new Vector2(4f, 0f));
                 }
 
                 else if (LR_Check == 1) // 왼쪽이면
                 {
-                    VectorAdd(new Vector2(-3f, 3f));
+                    VectorAdd(new Vector2(-4f, 0f));
                 }
             }
         }
@@ -516,12 +516,12 @@ public class Player : MonoBehaviour {
                 Stamina_Time = 0;
                 if (LR_Check == 0) // 왼쪽이면
                 {
-                    VectorAdd(new Vector2(3f, 3f));
+                    VectorAdd(new Vector2(4f, 0f));
                 }
 
                 else if (LR_Check == 1) // 왼쪽이면
                 {
-                    VectorAdd(new Vector2(-3f, 3f));
+                    VectorAdd(new Vector2(-4f, 0f));
                 }
 
             }
@@ -559,12 +559,12 @@ public class Player : MonoBehaviour {
                 Stamina_Time = 0;
                 if (LR_Check == 0) // 왼쪽이면
                 {
-                    VectorAdd(new Vector2(3f, 3f));
+                    VectorAdd(new Vector2(4f, 0f));
                 }
 
                 else if (LR_Check == 1) // 왼쪽이면
                 {
-                    VectorAdd(new Vector2(-3f, 3f));
+                    VectorAdd(new Vector2(-4f, 0f));
                 }
             }
             rigid.AddForce(hitvec3, ForceMode2D.Impulse);

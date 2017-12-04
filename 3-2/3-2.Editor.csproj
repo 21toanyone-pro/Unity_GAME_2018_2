@@ -158,8 +158,7 @@
     <None Include="Assets\Bone\Effect\Crack.atlas.txt" />
     <None Include="Assets\Bone\Effect\Dust.atlas.txt" />
     <None Include="Assets\Bone\Effect\Uprsiing effect.atlas.txt" />
-    <None Include="Assets\Bone\Mini_boss\Boss2.atlas.txt" />
-    <None Include="Assets\Bone\Mini_boss\skeleton.atlas.txt" />
+    <None Include="Assets\Bone\Mini_boss\Boss_Young.atlas.txt" />
     <None Include="Assets\Bone\Misalie\Boss2_Missile.atlas.txt" />
     <None Include="Assets\Bone\Misalie\Boss2_Spike.atlas.txt" />
     <None Include="Assets\Spine\spine-unity\Editor\Resources\SpineAssetDatabaseMarker.txt" />
