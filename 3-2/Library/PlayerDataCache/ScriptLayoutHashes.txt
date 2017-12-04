@@ -16,7 +16,8 @@ c24a21b131bfa67be1162db2cba4b52b UnityEngine.Timeline.dll:UnityEngine.Timeline.T
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.CameraMove
 e2cedfa979a807f36b38fa42170e0942 Assembly-CSharp.dll:Spine.Unity.Modules.SkeletonRendererCustomMaterials
 d2dd6cfd546fb8f7751d5039ff9ada81 Assembly-CSharp.dll:.Player_State
-e673a87000d2983ae96e0134c4268a70 Assembly-CSharp.dll:.Player
+804b6d74747e0a77a802fcacd6bf855a Assembly-CSharp.dll:.Player
+95ed84810663976abfd707c5fc8b8660 Assembly-CSharp.dll:.Close
 a35dc9cca2faebc5f5f1aeb9e8e47bbe UnityEngine.UI.dll:UnityEngine.UI.AspectRatioFitter
 05524b8f659e7bfe5756d1335fec24ba UnityEngine.UI.dll:UnityEngine.EventSystems.BaseInput
 49cd62a578efc0a599b810a2b66cd49c UnityEngine.UI.dll:UnityEngine.UI.Button
@@ -118,6 +119,7 @@ bc68edb0af574bf79f9550ead8ebae5c UnityEngine.HoloLens.dll:UnityEngine.Audio.Audi
 463516d5b5fe8e67a0a24c48f2095b04 UnityEngine.HoloLens.dll:UnityEngine.EventSystems.HoloLensInputModule
 c2275a8bfbb9f9942cad75ecdfded41d UnityEngine.HoloLens.dll:UnityEngine.VR.WSA.SpatialMappingCollider
 45f3431f0103c41611e8d4eec3d439df UnityEngine.HoloLens.dll:UnityEngine.VR.WSA.SpatialMappingRenderer
+c07afd94aef4cf4241f788e0b16342ce Assembly-CSharp.dll:.OpeningBoss
 5d60379d372a9f6486f3dee512ae55f2 Assembly-CSharp.dll:Spine.Unity.Modules.SkeletonUtilityEyeConstraint
 1a904b248edf6fd97c7a683da93ac0dc Assembly-CSharp.dll:Spine.Unity.SkeletonAnimation
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.FogManager
@@ -133,7 +135,9 @@ b554495a7a49aa0e36e6be9951e52090 Assembly-CSharp.dll:.Camera_zoom
 0d468bf99cd951e0d9d50cdcd9b35cde Assembly-CSharp.dll:.LastBoss
 8e4995b03adb62ae77022d0a51362539 Assembly-CSharp.dll:.Boss
 fd53a0d50fbeb9dad51d03f0802c3295 Assembly-CSharp.dll:Spine.Unity.Modules.SkeletonGhostRenderer
+7b53058d468712c151ea3373bf04b827 Assembly-CSharp.dll:.BossDead
 80dce36697fb8d46593f70f0d71d101b Assembly-CSharp.dll:Spine.Unity.AtlasAsset
+05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.EndScene
 fc1e0f4d8439d9928083474691511a13 UnityEngine.Networking.dll:UnityEngine.Networking.NetworkAnimator
 05524b8f659e7bfe5756d1335fec24ba UnityEngine.Networking.dll:UnityEngine.Networking.NetworkBehaviour
 60b2bb652410a5867a5ab9a01cd38461 UnityEngine.Networking.dll:UnityEngine.Networking.NetworkDiscovery
@@ -176,9 +180,5 @@ e86d6c3b72ec802ce0189ee2d9b82692 Assembly-CSharp.dll:.Camera_Shake
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.Stone
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.Spike
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.Destroy
-2b28cd848031072ab15273daa0cd108b Assembly-CSharp.dll:.CollDestroy
+91c62c5b2fcf5a4222195ee4cba82b4e Assembly-CSharp.dll:.CollDestroy
 49a7736c8d7f45a83160b402a49338f1 Assembly-CSharp.dll:.Death
-95ed84810663976abfd707c5fc8b8660 Assembly-CSharp.dll:.Close
-c07afd94aef4cf4241f788e0b16342ce Assembly-CSharp.dll:.OpeningBoss
-05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.EndScene
-7b53058d468712c151ea3373bf04b827 Assembly-CSharp.dll:.BossDead

@@ -93,6 +93,7 @@ public class MiniBoss : MonoBehaviour {
         {
             BossSound.clip = Death;
             BossSound.Play();
+            Destroy(gameObject, 0.5f);
         }
 
         if (other.gameObject.tag == "Wall")

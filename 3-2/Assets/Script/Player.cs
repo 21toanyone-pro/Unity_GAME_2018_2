@@ -46,7 +46,7 @@ public class Player : MonoBehaviour {
     public bool AttackCheck; //공격중 체크
     bool StrongCheck; //강한 공격 체크
     bool NextAttackCheck; // 다음 공격 켜져있나
-    bool GuardCheck; // 땅이 닿았는지 체크
+    public bool GuardCheck; // 땅이 닿았는지 체크
     bool HitCheck; // 맞았는지 체크
     bool UnHitCheck; // 안맞는 시간
     bool RushHit; // 상대 돌진중에 맞는거
@@ -401,12 +401,12 @@ public class Player : MonoBehaviour {
             if (!GuardCheck)
             {
                 animator.SetBool("HitCheck", true);
-                
                 CurrentHp = 10;
                 StartCoroutine(Slow_HP());
                 HitCheck = true;
                 Invoke("ReHit", 0.5f);
                 StartCoroutine(NoHitTime());
+                SAttackCheck();
             }
 
             else
@@ -416,7 +416,7 @@ public class Player : MonoBehaviour {
                 CurrentST = 10;
                 StartCoroutine(Slow_ST());
                 Stamina_Time = 0;
-
+                SAttackCheck();
             }
         }
 
@@ -438,6 +438,7 @@ public class Player : MonoBehaviour {
                 PlayerSource.Play();
                 CurrentHp = 30;
                 StartCoroutine(Slow_HP());
+                SAttackCheck();
             }
 
             else
@@ -454,11 +455,11 @@ public class Player : MonoBehaviour {
                 PlayerSource.Play();
                 CurrentHp = 30;
                 StartCoroutine(Slow_HP());
+                SAttackCheck();
             }
 
             if(GuardCheck)
             {
-                rigid.velocity = Vector2.zero;
                 CurrentST = 10;
                 StartCoroutine(Slow_ST());
                 Stamina_Time = 0;
@@ -467,7 +468,6 @@ public class Player : MonoBehaviour {
                 if (LR_Check == 0) // 왼쪽이면
                 {
                     VectorAdd(new Vector2(5f, 0f));
-                    
                 }
 
                 else if (LR_Check == 1) // 왼쪽이면
@@ -508,6 +508,7 @@ public class Player : MonoBehaviour {
                 HitCheck = true;
                 Invoke("ReHit", 0.5f);
                 StartCoroutine(NoHitTime());
+                SAttackCheck();
                 if (LR_Check == 0) // 왼쪽이면
                 {
                     hitvec2 = new Vector2(5f, 5f);
@@ -556,6 +557,7 @@ public class Player : MonoBehaviour {
                 HitCheck = true;
                 Invoke("ReHit", 0.5f);
                 StartCoroutine(NoHitTime());
+                SAttackCheck();
                 if (LR_Check == 0) // 왼쪽이면
                 {
                     VectorAdd(new Vector2(5f, 5f));

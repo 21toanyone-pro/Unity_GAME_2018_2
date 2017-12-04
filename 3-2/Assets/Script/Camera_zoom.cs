@@ -13,6 +13,7 @@ public class Camera_zoom : MonoBehaviour {
     float MaxSize = 8.5f;
     public Image Name;
     float MinSize = 3f;
+    bool Checked;
 
     // Use this for initialization
     void Awake () {
@@ -24,7 +25,7 @@ public class Camera_zoom : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        if (player.CheckPoint)
+        if (player.CheckPoint )
         {
             transform.position = Vector3.Lerp(transform.position, Camera.position, 2f * Time.deltaTime);
             transform.position = new Vector3(12.84f, 0f, -10f); // 체크시 카메라 좌표 이동
@@ -35,11 +36,10 @@ public class Camera_zoom : MonoBehaviour {
     IEnumerator Zoomin()
     {
         CameraZ.orthographicSize = Mathf.Lerp(CameraZ.orthographicSize, MinSize, Time.deltaTime / 2.5f); //줌인
-        Name.enabled = true;
+        
         yield return new WaitForSeconds(0.3f); //3초뒤에
         yield return new WaitForSeconds(2f);
         CameraZ.orthographicSize = Mathf.Lerp(CameraZ.orthographicSize, MaxSize, Time.deltaTime * 9f); //줌아웃
-        Name.enabled = false;
         yield return new WaitForSeconds(0.6f);
         boss.SleepOn = true;
         player.CheckPoint = false;

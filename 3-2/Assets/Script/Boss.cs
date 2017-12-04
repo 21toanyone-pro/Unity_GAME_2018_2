@@ -706,7 +706,7 @@ public class Boss : MonoBehaviour {
             Invoke("StopShake", 0.5f);
         }
 
-        if(other.gameObject.tag == "Player" && RushCheck && !player.RollingCheck)
+        if(other.gameObject.tag == "Player" && RushCheck && !player.RollingCheck && !player.GuardCheck)
         {
             RushHitCheck = true;
         }
