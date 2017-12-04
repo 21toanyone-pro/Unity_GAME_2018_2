@@ -23,6 +23,8 @@ public class Player_State : MonoBehaviour {
         player = GameObject.Find("Player").GetComponent<Player>();
 
         Invoke("Open", 3f);
+
+
     }
 
     void Open()
@@ -40,5 +42,12 @@ public class Player_State : MonoBehaviour {
 
         CurrentST = player.PlayerST;
         PlayerST.fillAmount = CurrentST / MaxST;
+
+        if (player.PlayerHP <= 0)
+        {
+            PlayerHP.enabled = false;
+            PlayerST.enabled = false;
+            State.enabled = false;
+        }
     }
 }

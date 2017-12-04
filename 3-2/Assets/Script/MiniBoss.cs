@@ -12,6 +12,7 @@ public class MiniBoss : MonoBehaviour {
     bool moveCheck;
     Rigidbody2D rd;
     public Collider2D coll;
+    public Collider2D Coll2;
     Player player;
     Boss boss;
     Animator ani;
@@ -58,6 +59,20 @@ public class MiniBoss : MonoBehaviour {
 
             transform.position += moveVec * 1f * Time.deltaTime;
         }
+
+        if(player.RollingCheck)
+        {
+            coll.enabled = false;
+            Coll2.enabled = true;
+        }
+
+        else
+        {
+            coll.enabled = true;
+            Coll2.enabled = false;
+        }
+
+
 	}
 
     void Angel_move(Vector3 velocity)
@@ -74,12 +89,10 @@ public class MiniBoss : MonoBehaviour {
             moveCheck = true;
         }
 
-        if (other.gameObject.tag == "Player")
+        if (other.gameObject.tag == "Player" && !player.RollingCheck)
         {
-            ani.SetBool("Death", true);
             BossSound.clip = Death;
             BossSound.Play();
-            Destroy(gameObject, 0.5f);
         }
 
         if (other.gameObject.tag == "Wall")
@@ -90,11 +103,10 @@ public class MiniBoss : MonoBehaviour {
             Destroy(gameObject, 0.5f);
         }
 
-        if (other.gameObject.tag == "Attackcoll")
+        if (other.gameObject.tag == "Attackcoll" && player.AttackCheck)
         {
             BossSound.clip = Death;
             BossSound.Play();
-            ani.SetBool("Death", true);
             Destroy(gameObject, 0.5f);
         }
     }

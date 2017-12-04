@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Camera_zoom : MonoBehaviour {
 
@@ -10,6 +11,7 @@ public class Camera_zoom : MonoBehaviour {
     Transform Camera;
     public GameObject Boss;
     float MaxSize = 8.5f;
+    public Image Name;
     float MinSize = 3f;
 
     // Use this for initialization
@@ -33,9 +35,11 @@ public class Camera_zoom : MonoBehaviour {
     IEnumerator Zoomin()
     {
         CameraZ.orthographicSize = Mathf.Lerp(CameraZ.orthographicSize, MinSize, Time.deltaTime / 2.5f); //줌인
+        Name.enabled = true;
         yield return new WaitForSeconds(0.3f); //3초뒤에
         yield return new WaitForSeconds(2f);
         CameraZ.orthographicSize = Mathf.Lerp(CameraZ.orthographicSize, MaxSize, Time.deltaTime * 9f); //줌아웃
+        Name.enabled = false;
         yield return new WaitForSeconds(0.6f);
         boss.SleepOn = true;
         player.CheckPoint = false;

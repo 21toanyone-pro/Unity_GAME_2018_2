@@ -40,7 +40,7 @@ public class Boss : MonoBehaviour {
     public AudioClip Intro; //게임 시작할때
     public AudioClip Intro2; // 페이즈2 넘어갈때
     public AudioClip Intro3; // 페이즈3갈때
-
+    public bool LastScene;
 
     SkeletonAnimator skeleton;
     Camera_Shake CShacke;
@@ -343,6 +343,7 @@ public class Boss : MonoBehaviour {
             BabyNum = Random.Range(0, 5);
             if (Boss_HP <= 15)
             {
+                LastScene = true;
                 if (transform.position.x > PlayerPos.transform.position.x)
                 { Instantiate(LastBaby, BabyPos[3].transform.position, Quaternion.identity); }
                 else if (transform.position.x < PlayerPos.transform.position.x)
@@ -355,10 +356,14 @@ public class Boss : MonoBehaviour {
             }
             Boss_HP -= 15;
             yield return new WaitForSeconds(1f);
-            StartCoroutine(Drop_Stone());
-            yield return new WaitForSeconds(0.5f);
         } while (true);
-        
+
+        do
+        {
+            if (Boss_HP <= 15) break;
+            StartCoroutine(Drop_Stone());
+            yield return new WaitForSeconds(2.5f);
+        } while (true);
     }
 
     IEnumerator Drop_Stone() //돌 떨어짐
@@ -445,6 +450,15 @@ public class Boss : MonoBehaviour {
     {
         Vector3 MoveVec = Vector3.zero;
         Vector3 StopPos = new Vector3(0f, transform.position.y, transform.position.z);
+        if(transform.position.x > 0f)
+        {
+            transform.localScale = new Vector3(1.2f, 1.2f, 1.2f);
+        }
+
+        else if(transform.position.x < 0f)
+        {
+            transform.localScale = new Vector3(-1.2f, 1.2f, 1.2f);
+        }
         do
         {
             transform.position = Vector3.MoveTowards(transform.position, StopPos, Time.deltaTime*2f);

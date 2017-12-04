@@ -24,7 +24,7 @@ public class Stone : MonoBehaviour {
         if(other.gameObject.tag == "Boss" || other.gameObject.tag == "Player" || other.gameObject.tag =="Ground")
         {
             ani.SetTrigger("Break");
-            Destroy(gameObject, 0.5f); 
+            Destroy(gameObject, 0.3f); 
         }
 
     }

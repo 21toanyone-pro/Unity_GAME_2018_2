@@ -28,6 +28,7 @@ public class Player : MonoBehaviour {
     public AudioClip Jump_S;
     public AudioClip Hit_S;
     public AudioClip Landing_S;
+    public AudioClip Hit2;
 
 
     public float PlayerHP = 100;
@@ -42,7 +43,7 @@ public class Player : MonoBehaviour {
 
     bool JumpCheck; // 이중점프 체크
     bool JumpCharsh; // 점프중 부딫힘
-    bool AttackCheck; //공격중 체크
+    public bool AttackCheck; //공격중 체크
     bool StrongCheck; //강한 공격 체크
     bool NextAttackCheck; // 다음 공격 켜져있나
     bool GuardCheck; // 땅이 닿았는지 체크
@@ -76,12 +77,6 @@ public class Player : MonoBehaviour {
         if ((Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow)) && !JumpCheck)
         {
             PlayerSource.PlayOneShot(Move_S);
-            Dust.enabled = true;
-        }
-
-        else
-        {
-            Dust.enabled = false;
         }
     }
 
@@ -155,8 +150,6 @@ public class Player : MonoBehaviour {
         if(Input.GetKeyDown(KeyCode.A) && !HitCheck && !UnHitCheck) // 가드 하기
         {
             StartCoroutine(Guard());
-            PlayerSource.clip = Defence_S;
-            PlayerSource.Play();
         }
 
         else if(Input.GetKeyUp(KeyCode.A)) // 가드 풀기
@@ -270,7 +263,7 @@ public class Player : MonoBehaviour {
             CurrentST = 25;
             StartCoroutine(Slow_ST());
             Stamina_Time = 0;
-            PlayerSource.clip = Rolling_S;
+            PlayerSource.clip = Jump_S;
             PlayerSource.Play();
         }
     }
@@ -414,31 +407,16 @@ public class Player : MonoBehaviour {
                 HitCheck = true;
                 Invoke("ReHit", 0.5f);
                 StartCoroutine(NoHitTime());
-                if(LR_Check == 0) // 왼쪽이면
-                {
-                    VectorAdd(new Vector2(4f, 7f));
-                }
-
-                else if (LR_Check == 1) // 왼쪽이면
-                {
-                    VectorAdd(new Vector2(-4f, 7f));
-                }
             }
 
             else
             {
+                PlayerSource.clip = Defence_S;
+                PlayerSource.Play();
                 CurrentST = 10;
                 StartCoroutine(Slow_ST());
                 Stamina_Time = 0;
-                if (LR_Check == 0) // 왼쪽이면
-                {
-                    VectorAdd(new Vector2(4f, 0f));
-                }
 
-                else if (LR_Check == 1) // 왼쪽이면
-                {
-                    VectorAdd(new Vector2(-4f, 0f));
-                }
             }
         }
 
@@ -456,6 +434,10 @@ public class Player : MonoBehaviour {
                 Invoke("ReHit", 0.5f);
                 UnHitCheck = true;
                 Shadow.enabled = false;
+                PlayerSource.clip = Hit_S;
+                PlayerSource.Play();
+                CurrentHp = 30;
+                StartCoroutine(Slow_HP());
             }
 
             else
@@ -468,6 +450,31 @@ public class Player : MonoBehaviour {
                 Invoke("ReHit", 0.5f);
                 UnHitCheck = true;
                 Shadow.enabled = false;
+                PlayerSource.clip = Hit_S;
+                PlayerSource.Play();
+                CurrentHp = 30;
+                StartCoroutine(Slow_HP());
+            }
+
+            if(GuardCheck)
+            {
+                rigid.velocity = Vector2.zero;
+                CurrentST = 10;
+                StartCoroutine(Slow_ST());
+                Stamina_Time = 0;
+                PlayerSource.clip = Defence_S;
+                PlayerSource.Play();
+                if (LR_Check == 0) // 왼쪽이면
+                {
+                    VectorAdd(new Vector2(5f, 0f));
+                    
+                }
+
+                else if (LR_Check == 1) // 왼쪽이면
+                {
+                    VectorAdd(new Vector2(-5f, 0f));
+                }
+
             }
         }
 
@@ -480,7 +487,9 @@ public class Player : MonoBehaviour {
 
             if (RushHit)
             {
-               Invoke("DeathCheck", 0.8f);
+                PlayerSource.clip = Hit2;
+                PlayerSource.Play();
+                Invoke("DeathCheck", 0.8f);
                Shadow.enabled = true;
             }
         }
@@ -490,6 +499,8 @@ public class Player : MonoBehaviour {
             Vector2 hitvec2 = Vector2.zero;
             if(!GuardCheck)
             {
+                PlayerSource.clip = Hit_S;
+                PlayerSource.Play();
                 rigid.velocity = Vector2.zero;
                 animator.SetBool("HitCheck", true);
                 CurrentHp = 10;
@@ -514,6 +525,8 @@ public class Player : MonoBehaviour {
                 CurrentST = 10;
                 StartCoroutine(Slow_ST());
                 Stamina_Time = 0;
+                PlayerSource.clip = Defence_S;
+                PlayerSource.Play();
                 if (LR_Check == 0) // 왼쪽이면
                 {
                     VectorAdd(new Vector2(4f, 0f));
@@ -528,12 +541,14 @@ public class Player : MonoBehaviour {
             rigid.AddForce(hitvec2, ForceMode2D.Impulse);
         }
 
-        if(other.gameObject.tag == "MiniBoss" && !UnHitCheck && !RollingCheck) 
+        if(other.gameObject.tag == "MiniBoss" && !UnHitCheck && !RollingCheck && !AttackCheck) 
         {
             Vector2 hitvec3 = Vector2.zero;
 
             if (!GuardCheck)
             {
+                PlayerSource.clip = Hit_S;
+                PlayerSource.Play();
                 rigid.velocity = Vector2.zero;
                 animator.SetBool("HitCheck", true);
                 CurrentHp = 20;
@@ -554,6 +569,8 @@ public class Player : MonoBehaviour {
 
             else
             {
+                PlayerSource.clip = Defence_S;
+                PlayerSource.Play();
                 CurrentST = 10;
                 StartCoroutine(Slow_ST());
                 Stamina_Time = 0;

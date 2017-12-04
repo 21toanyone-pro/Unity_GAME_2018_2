@@ -10,14 +10,17 @@ public class BGMManager : MonoBehaviour {
     public AudioClip Page01; // p1
     public AudioClip Page02; // p2
     public AudioClip Page03; // p3
+    public AudioClip Last;
     float Times = 0.5f;
     float Times2 = 0.5f;
     float Times3 = 0.5f;
+    float Times4 = 0.5f;
     float Volume02 =0;
 
     bool Check01;
     bool Check02;
     bool Check03;
+    bool Check04;
     // Use this for initialization
     void Start () {
         boss = GameObject.Find("Boss").GetComponent<Boss>();
@@ -75,7 +78,24 @@ public class BGMManager : MonoBehaviour {
                 BGM.Play();
                 Check03 = true;
             }
-            
+        }
+
+        else if (boss.LastScene && !Check04)
+        {
+            if (Times4 >= 0)
+            {
+                Times4 -= 0.01f;
+                BGM.volume = Times4;
+            }
+
+            if (Times4 <= 0)
+            {
+                StartCoroutine(BGM_Sound());
+                BGM.clip = Last;
+                BGM.Play();
+                Check04 = true;
+            }
+
         }
     }
 

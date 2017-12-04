@@ -97,11 +97,12 @@ public class LastBoss : MonoBehaviour {
             Destroy(gameObject, 0.5f);
         }
 
-        if (other.gameObject.tag == "Attackcoll")
+        if (other.gameObject.tag == "Attackcoll" && player.AttackCheck)
         {
             BossSound.clip = Death;
             BossSound.Play();
             ani.SetBool("Death", true);
+            boss.Boss_HP = 0;
             Destroy(gameObject, 0.5f);
         }
     }

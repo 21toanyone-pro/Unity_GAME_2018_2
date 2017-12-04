@@ -84,13 +84,17 @@
     <Compile Include="Assets\Script\BGMManager.cs" />
     <Compile Include="Assets\Script\Boss.cs" />
     <Compile Include="Assets\Script\Boss_HP.cs" />
+    <Compile Include="Assets\Script\BossDead.cs" />
     <Compile Include="Assets\Script\Camera_Con.cs" />
     <Compile Include="Assets\Script\Camera_Shake.cs" />
     <Compile Include="Assets\Script\Camera_zoom.cs" />
     <Compile Include="Assets\Script\CameraFollow.cs" />
     <Compile Include="Assets\Script\CameraMove.cs" />
+    <Compile Include="Assets\Script\Close.cs" />
     <Compile Include="Assets\Script\CollDestroy.cs" />
+    <Compile Include="Assets\Script\Death.cs" />
     <Compile Include="Assets\Script\Effect.cs" />
+    <Compile Include="Assets\Script\EndScene.cs" />
     <Compile Include="Assets\Script\FogColor.cs" />
     <Compile Include="Assets\Script\FogManager.cs" />
     <Compile Include="Assets\Script\FogMove.cs" />
@@ -99,6 +103,7 @@
     <Compile Include="Assets\Script\MiniBoss.cs" />
     <Compile Include="Assets\Script\MotionBlur.cs" />
     <Compile Include="Assets\Script\Opening.cs" />
+    <Compile Include="Assets\Script\OpeningBoss.cs" />
     <Compile Include="Assets\Script\Player.cs" />
     <Compile Include="Assets\Script\Player_State.cs" />
     <Compile Include="Assets\Script\Spike.cs" />

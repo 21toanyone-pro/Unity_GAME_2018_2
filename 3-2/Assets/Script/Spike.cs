@@ -6,6 +6,8 @@ using Spine;
 
 public class Spike : MonoBehaviour {
 
+    AudioSource Sound;
+
     //SkeletonAnimation skeleton;
     SkeletonAnimator skeleton;
     Animator ani;
@@ -14,6 +16,8 @@ public class Spike : MonoBehaviour {
     void Awake () {
         skeleton = GetComponent<SkeletonAnimator>();
         ani = GetComponent<Animator>();
+        Sound = GetComponent<AudioSource>();
+        Sound.Play();
     }
 	
 	// Update is called once per frame
