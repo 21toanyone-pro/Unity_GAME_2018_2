@@ -14,7 +14,8 @@ public class Boss : MonoBehaviour {
     public GameObject World_Stinger;
     public GameObject Stones;
     public GameObject Baby; // 새끼들
-    public GameObject[] StoneDrop = new GameObject[11];
+    public GameObject[] StoneDrop = new GameObject[6];
+    public GameObject[] StoneDrop02 = new GameObject[5];
     public GameObject[] BabyPos = new GameObject[5];
     public GameObject[] BloodPos = new GameObject[2];
     public GameObject Blood_effect;
@@ -31,13 +32,13 @@ public class Boss : MonoBehaviour {
     public AudioSource H_Source;
     public AudioClip Shout; // 1페이즈 가시패턴
     public AudioClip Shout02; // 2페이즈 가시패턴
-    public AudioClip UprisingSound;
-    public AudioClip Burrow;
-    public AudioClip Rush;
-    public AudioClip HitSound;
-    public AudioClip Intro;
-    public AudioClip Intro2;
-    public AudioClip Intro3;
+    public AudioClip UprisingSound; //올라올때
+    public AudioClip Burrow; //들어갈때
+    public AudioClip Rush; //돌진
+    public AudioClip HitSound; //맞을때
+    public AudioClip Intro; //게임 시작할때
+    public AudioClip Intro2; // 페이즈2 넘어갈때
+    public AudioClip Intro3; // 페이즈3갈때
 
 
     SkeletonAnimator skeleton;
@@ -63,7 +64,7 @@ public class Boss : MonoBehaviour {
     bool WallCheck;
     bool Hit_effect;
     bool RushHitCheck; //맞았는지 안맞았는지
-
+    bool Page02Check;
     int paseCheck; // 1, 2, 3 = 페이즈 1,2,3
 
     public enum BOSSSTATE { SLEEP, IDLE, UPRISING, RUSH, SHOUT, SHOUT2, WAIT, MOVE, DEATH, PAGE03, PAGE02,BABY }
@@ -81,7 +82,9 @@ public class Boss : MonoBehaviour {
         skeleton = GetComponent<SkeletonAnimator>();
         rigid = GetComponent<Rigidbody2D>();
         CShacke.enabled = false;
-   
+        Page02Check = false;
+
+
     }
 
     IEnumerator FSM()
@@ -104,6 +107,8 @@ public class Boss : MonoBehaviour {
                     RushColl.enabled = false;
                     if (paseCheck == 3)
                     {
+                        D_Source.clip = Intro3;
+                        D_Source.Play();
                         bossstate = BOSSSTATE.PAGE03;
                         coll.enabled = false;
                     }
@@ -168,14 +173,16 @@ public class Boss : MonoBehaviour {
                 case BOSSSTATE.WAIT:
                     break;
                 case BOSSSTATE.PAGE03:
-                    D_Source.clip = Intro3;
-                    D_Source.Play();
+                    
                     StartCoroutine(Pasge03_boss());
                     ani.SetTrigger("PageChange03");
                     bossstate = BOSSSTATE.WAIT;
                     break;
 
                 case BOSSSTATE.PAGE02: //페이즈2
+                    D_Source.clip = Intro2;
+                    D_Source.Play();
+                    ani.SetTrigger("PageChange02");
                     Invoke("Page2end", 1.5f);
                     bossstate = BOSSSTATE.WAIT;
                     break;
@@ -217,7 +224,7 @@ public class Boss : MonoBehaviour {
 
     IEnumerator Pattern2()
     {
-        if (bossstate == BOSSSTATE.IDLE && paseCheck ==2)
+        if (bossstate == BOSSSTATE.IDLE && paseCheck ==2 && Page02Check)
         {
             RandPattern02 = Random.Range(0, 10);
             if (RandPattern02 == 0 || RandPattern02 == 1 || RandPattern02 == 2 ) // 덮치기 
@@ -244,6 +251,7 @@ public class Boss : MonoBehaviour {
     {
         paseCheck = 2;
         bossstate = BOSSSTATE.IDLE;
+        Page02Check = true;
     }
 
 
@@ -258,8 +266,6 @@ public class Boss : MonoBehaviour {
         }
         else if(paseCheck ==2)
         {
-            D_Source.clip = Shout02;
-            D_Source.Play();
             StartCoroutine(WorldStinger());
         }
     }
@@ -277,7 +283,7 @@ public class Boss : MonoBehaviour {
         bossstate = BOSSSTATE.IDLE;
     }
 
-    IEnumerator WorldStinger()
+    IEnumerator WorldStinger() //2페이즈 전체 공격 
     {
         Vector3 StingerPosR = new Vector3(transform.position.x+3, transform.position.y, transform.position.z);
         Vector3 StingerPosL = new Vector3(transform.position.x-3, transform.position.y, transform.position.z);
@@ -348,26 +354,54 @@ public class Boss : MonoBehaviour {
     {
         int[] randArray = new int[6];
         bool isSame;
-        for(int i =0; i< 6; i++)
-        {
-            while(true)
-            {
-                randArray[i] = Random.Range(0, 11);
-                isSame = false;
-                for(int j =0; j< i; ++j)
-                {
-                    if(randArray[j] == randArray[i])
-                    {
-                        isSame = true;
-                        break;
-                    }
-                }
-                if (!isSame) break;
-            }
-            Instantiate(Stones, StoneDrop[randArray[i]].transform.position, Quaternion.Euler(0,0,-36f));
-        }
-        yield return new WaitForSeconds(0.1f);
+        int randPos =0;
+        randPos = Random.Range(0, 2);
 
+        if (randPos == 0)
+        {
+            for (int i = 0; i < 6; i++)
+            {
+                while (true)
+                {
+                    randArray[i] = Random.Range(0, 6);
+                    isSame = false;
+                    for (int j = 0; j < i; ++j)
+                    {
+                        if (randArray[j] == randArray[i])
+                        {
+                            isSame = true;
+                            break;
+                        }
+                    }
+                    if (!isSame) break;
+                }
+                Instantiate(Stones, StoneDrop[randArray[i]].transform.position, Quaternion.identity);
+                yield return new WaitForSeconds(0.1f);
+            }
+        }
+
+        else if(randPos == 1)
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                while (true)
+                {
+                    randArray[i] = Random.Range(0, 5);
+                    isSame = false;
+                    for (int j = 0; j < i; ++j)
+                    {
+                        if (randArray[j] == randArray[i])
+                        {
+                            isSame = true;
+                            break;
+                        }
+                    }
+                    if (!isSame) break;
+                }
+                Instantiate(Stones, StoneDrop02[randArray[i]].transform.position, Quaternion.identity);
+                yield return new WaitForSeconds(0.1f);
+            }
+        }
 
     }
 
@@ -400,7 +434,7 @@ public class Boss : MonoBehaviour {
     IEnumerator Pasge03_boss()
     {
         Vector3 MoveVec = Vector3.zero;
-        Vector3 StopPos = new Vector3(12f, transform.position.y, transform.position.z);
+        Vector3 StopPos = new Vector3(0f, transform.position.y, transform.position.z);
         do
         {
             transform.position = Vector3.MoveTowards(transform.position, StopPos, Time.deltaTime);
@@ -522,23 +556,30 @@ public class Boss : MonoBehaviour {
         RushColl.enabled = true;
         RushCheck = true;
         float Spead = 10;
-        do
+
+        if (HozCheck)
         {
-            if (HozCheck)
+            do
             {
                 RushVec = Vector3.left;
                 transform.localScale = new Vector3(1.2f, 1.2f, 1.2f);
-            }
-            else if (!HozCheck)
+                transform.position += RushVec * Spead * Time.deltaTime;
+                Spead += 1f;
+                yield return null;
+            } while (!WallCheck);
+        }
+
+        else if (!HozCheck)
+        {
+            do
             {
                 RushVec = Vector3.right;
                 transform.localScale = new Vector3(-1.2f, 1.2f, 1.2f);
-            }
-            transform.position += RushVec * Spead * Time.deltaTime;
-            Spead += 1f;
-            yield return null;
-        } while (!WallCheck);
-
+                transform.position += RushVec * Spead * Time.deltaTime;
+                Spead += 1f;
+                yield return null;
+            } while (!WallCheck);
+        }
         if (WallCheck)
         {
             RushCheck = false;
@@ -605,18 +646,15 @@ public class Boss : MonoBehaviour {
             paseCheck = 1;
         }
 
-        else if (Boss_HP < 750 && Boss_HP > 150)
+        else if ((Boss_HP < 750 && Boss_HP > 150) && bossstate == BOSSSTATE.IDLE)
         {
             if (paseCheck == 1)
             {
-                D_Source.clip = Intro2;
-                D_Source.Play();
                 bossstate = BOSSSTATE.PAGE02;
             }
-            ani.SetTrigger("PageChange02");
         }
 
-        else if (Boss_HP <= 150)
+        else if (Boss_HP <= 150 && bossstate == BOSSSTATE.IDLE)
         {
             paseCheck = 3;
         }
@@ -644,7 +682,7 @@ public class Boss : MonoBehaviour {
             Invoke("StopShake", 0.5f);
         }
 
-        if(other.gameObject.tag == "Player" && RushCheck)
+        if(other.gameObject.tag == "Player" && RushCheck && !player.RollingCheck)
         {
             RushHitCheck = true;
         }

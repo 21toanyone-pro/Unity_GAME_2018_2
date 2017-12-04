@@ -10,6 +10,8 @@ public class Effect : MonoBehaviour {
     float Alpha = 1f;
     float Alpha2 = 0f;
     float LastAlpha;
+
+    int EffectNum; // 1 , 2, 3
 	// Use this for initialization
 	void Start () {
         Skeleton = GetComponent<SkeletonAnimator>();
@@ -18,15 +20,19 @@ public class Effect : MonoBehaviour {
     
     void Update()
     {
-        Skeleton.GetComponent<SkeletonAnimator>().skeleton.a = Alpha;
-        if(Alpha <=0)
+        if (EffectNum == 3)
         {
-            Destroy(gameObject);
+            Skeleton.GetComponent<SkeletonAnimator>().skeleton.a = Alpha;
+            if (Alpha <= 0)
+            {
+                Destroy(gameObject);
+            }
         }
     }
 
     void SlowSlowSLow()
     {
+        EffectNum = 3;
         StartCoroutine(SlowSlow());
     }
 
@@ -45,11 +51,13 @@ public class Effect : MonoBehaviour {
 
     void Destroy()
     {
+        EffectNum = 1;
         Destroy(gameObject);
     }
 
     void Uprising_Dest()
     {
+        EffectNum = 2;
         Destroy(gameObject, 0.5f);
     }
 }

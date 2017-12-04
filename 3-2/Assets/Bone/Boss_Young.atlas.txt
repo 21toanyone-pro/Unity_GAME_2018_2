@@ -1,0 +1,20 @@
+
+Boss_Young.png
+size: 218,220
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Bossyoung
+  rotate: false
+  xy: 2, 111
+  size: 214, 107
+  orig: 214, 107
+  offset: 0, 0
+  index: -1
+Bossyoung2
+  rotate: false
+  xy: 2, 2
+  size: 214, 107
+  orig: 214, 107
+  offset: 0, 0
+  index: -1

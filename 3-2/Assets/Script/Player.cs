@@ -416,12 +416,12 @@ public class Player : MonoBehaviour {
                 StartCoroutine(NoHitTime());
                 if(LR_Check == 0) // 왼쪽이면
                 {
-                    hitvec = new Vector2(4f, 7f);
+                    VectorAdd(new Vector2(4f, 7f));
                 }
 
                 else if (LR_Check == 1) // 왼쪽이면
                 {
-                    hitvec = new Vector2(-4f, 7f);
+                    VectorAdd(new Vector2(-4f, 7f));
                 }
             }
 
@@ -432,12 +432,12 @@ public class Player : MonoBehaviour {
                 Stamina_Time = 0;
                 if (LR_Check == 0) // 왼쪽이면
                 {
-                    hitvec = new Vector2(2f, 5f);
+                    VectorAdd(new Vector2(3f, 3f));
                 }
 
                 else if (LR_Check == 1) // 왼쪽이면
                 {
-                    hitvec = new Vector2(-2f, 5f);
+                    VectorAdd(new Vector2(-3f, 3f));
                 }
             }
         }
@@ -516,12 +516,12 @@ public class Player : MonoBehaviour {
                 Stamina_Time = 0;
                 if (LR_Check == 0) // 왼쪽이면
                 {
-                    hitvec2 = new Vector2(3f, 3f);
+                    VectorAdd(new Vector2(3f, 3f));
                 }
 
                 else if (LR_Check == 1) // 왼쪽이면
                 {
-                    hitvec2 = new Vector2(-3f, 3f);
+                    VectorAdd(new Vector2(-3f, 3f));
                 }
 
             }
@@ -543,12 +543,12 @@ public class Player : MonoBehaviour {
                 StartCoroutine(NoHitTime());
                 if (LR_Check == 0) // 왼쪽이면
                 {
-                    hitvec3 = new Vector2(5f, 5f);
+                    VectorAdd(new Vector2(5f, 5f));
                 }
 
                 else if (LR_Check == 1) // 왼쪽이면
                 {
-                    hitvec3 = new Vector2(-5f, 5f);
+                    VectorAdd(new Vector2(-5f, 5f));
                 }
             }
 
@@ -559,12 +559,12 @@ public class Player : MonoBehaviour {
                 Stamina_Time = 0;
                 if (LR_Check == 0) // 왼쪽이면
                 {
-                    hitvec3 = new Vector2(2f, 3f);
+                    VectorAdd(new Vector2(3f, 3f));
                 }
 
                 else if (LR_Check == 1) // 왼쪽이면
                 {
-                    hitvec3 = new Vector2(-2f, 3f);
+                    VectorAdd(new Vector2(-3f, 3f));
                 }
             }
             rigid.AddForce(hitvec3, ForceMode2D.Impulse);
